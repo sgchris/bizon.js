@@ -1,0 +1,61 @@
+@CHARSET "UTF-8";
+
+.bizon-image-wrapper {
+	display: inline-block;
+	position: relative;
+	background: #FAFAFA;
+}
+.bizon-image-wrapper img {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+}
+.bizon-image-wrapper .bizon-arrow-right,
+.bizon-image-wrapper .bizon-arrow-left,
+.bizon-image-wrapper .bizon-close {
+	position: absolute;
+	top: 40%;
+	padding: 10px;
+	background: #D5700B;
+	opacity: 0.1;
+	color: #FFF;
+	font-size: 30px;
+	font-weight: bold;
+	cursor: pointer;
+	line-height: 100px;
+}
+.bizon-image-wrapper .bizon-arrow-right:hover,
+.bizon-image-wrapper .bizon-arrow-left:hover,
+.bizon-image-wrapper .bizon-close:hover {
+	opacity: 0.8;
+}
+
+.bizon-image-wrapper .bizon-arrow-right {
+	right: 10px;
+}
+.bizon-image-wrapper .bizon-arrow-left {
+	left: 10px;
+}
+.bizon-image-wrapper .bizon-close {
+	right: 10px;
+	top: 10px;
+	line-height: 20px;
+}
+
+.bizon-small-images-wrapper {
+	display: inline-block;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background: #000;
+}
+.bizon-small-image-wrapper {
+	display: inline-block;
+	padding: 10px;
+}
+.bizon-small-image-wrapper img {
+	cursor: pointer;
+}
+	
+.bizon-small-image-wrapper.bizon-active {
+	background: #D5700B;
+}
