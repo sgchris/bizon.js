@@ -289,9 +289,8 @@
 		return new bizonObj(container);
 	};
 	
-	// initialize bizon galleries
-	// document.addEventListener('DOMContentLoaded', function() {
-	window.addEventListener('load', function() {
+	// initialize bizon galleries - all elements with class "bizon"
+	document.addEventListener('DOMContentLoaded', function() {
 		[].forEach.call(document.querySelectorAll('.bizon'), function(bizonContainer) {
 			bizon(bizonContainer);
 		});
