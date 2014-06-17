@@ -9,6 +9,7 @@
 .bizon-image-wrapper img {
 	position: absolute;
 	display: inline-block;
+	cursor: pointer;
 	top: 0;
 }
 .bizon-image-wrapper .bizon-arrow-right,

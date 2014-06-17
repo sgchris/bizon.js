@@ -8,15 +8,29 @@ usage:
 
 HTML:
 ```
+<head>
+	...
+	<link rel="stylesheet" href="path/to/bizon.css" />
+	...
+</head>
+<body>
+...
 <div id="my-gallery">
   <img src="path-to-thumbnail1.jpg" full-image-src="full-image1.jpg" />
   <img src="path-to-thumbnail2.jpg" full-image-src="full-image2.jpg" />
   ...
 </div>
+...
+</body>
+
 ```
 
 JS:
 ```
+<script src="/path/to/bizon.js"></script>
+...
+...
+<script>
 // start the gallery when DOM is ready. use native JS like:
 document.addEventListener('DOMContentLoaded', function() {
   bizon(document.getElementById("my-gallery"));
@@ -26,13 +40,5 @@ document.addEventListener('DOMContentLoaded', function() {
 $(document).ready(function() {
   bizon(document.getElementById("my-gallery"));
 });
-
+</script>
 ```
-
-BUGS:
-* fix gallery when attributes "width" and/or "height" are not present
-* preview panel is not displayed sometimes
-
-TODO:
-* add callbacks on clicks
-* disable selection of the buttons

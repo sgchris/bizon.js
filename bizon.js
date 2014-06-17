@@ -57,9 +57,7 @@
 		// private configurable // 
 		
 		// space between each small image and its wrapper
-		this._smallImagesPadding = 20;
-		// height of the small images
-		this._smallImagesHeight = 120;
+		this._smallImagesPadding = 3;
 		// padding of the body
 		this._windowPadding = 15;
 
@@ -97,11 +95,7 @@
 				if (delta == 0 || (initialScrollTop >= maxScrollTop && finalScrollTo >= maxScrollTop)) {
 					return;
 				}
-				if (delta == 0) {
-					return;
-				}
 
-				console.log('delta', delta);
 				var nextScrollTop = initialScrollTop + delta;
 				elem.scrollTop = nextScrollTop;
 
@@ -223,10 +217,9 @@
 
 			// fix small images
 			[].forEach.call(this._smallImagesWrapper.querySelectorAll('.bizon-small-image-wrapper'), function(elem) {
-				elem.style.padding = this._smallImagesPadding + 'px';
-				elem.firstChild.style.width = (smallImagesWrapper - (that._smallImagesPadding * 2)) + 'px';
+				elem.style.padding = that._smallImagesPadding + 'px';
+				elem.firstChild.style.width = (smallImagesWrapper - (that._smallImagesPadding * 2) - 17) + 'px'; // 17 - scroll width
 			});
-
 
 			// fix main image
 			var currentImage = this.images[this._currentImage];
@@ -254,6 +247,16 @@
 			}
 
 		},
+		nextImage: function() {
+			this._currentImage++;
+			if (this._currentImage >= this.images.length) this._currentImage = 0;
+			this.setActiveImage();
+		},
+		prevImage: function() {
+			this._currentImage--;
+			if (this._currentImage < 0) this._currentImage = this.images.length - 1;
+			this.setActiveImage();
+		},
 		bindEvents: function() {
 			var that = this;
 			
@@ -270,16 +273,17 @@
 			
 			// click "next"
 			that.container.getElementsByClassName('bizon-arrow-right')[0].addEventListener('click', function() {
-				that._currentImage++;
-				if (that._currentImage >= that.images.length) that._currentImage = 0;
-				that.setActiveImage();
+				that.nextImage();
 			});
 			
 			// click "prev"
-			that.container.getElementsByClassName('bizon-arrow-left')[0].addEventListener('click', function() {
-				that._currentImage--;
-				if (that._currentImage < 0) that._currentImage = that.images.length - 1;
-				that.setActiveImage();
+			that.container.querySelector('.bizon-arrow-left').addEventListener('click', function() {
+				that.prevImage();
+			});
+			
+			// click on main image 
+			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
+				that.nextImage();
 			});
 		}
 	};
