@@ -28,3 +28,11 @@ $(document).ready(function() {
 });
 
 ```
+
+BUGS:
+* fix gallery when attributes "width" and/or "height" are not present
+* preview panel is not displayed sometimes
+
+TODO:
+* add callbacks on clicks
+* disable selection of the buttons
