@@ -42,6 +42,10 @@
 				var i = 0;
 				while( (elem = elem.previousSibling) != null ) i++;
 				return i;
+			},
+			
+			getElementRelativeTop: function(elem) {
+				return elem.offsetTop - elem.parentNode.offsetTop;
 			}
 	};
 	
@@ -85,7 +89,7 @@
 		animateScrollTo: (function() {
 
 			var timeoutInterval = 10;
-			var destinationDivide = 4;
+			var destinationDivide = 3;
 			var finalScrollTo;
 
 			var animate = function(elem) {
@@ -174,12 +178,12 @@
 			// if below
 			if (theSmallImage.offsetTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
 				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
-				this.animateScrollTo(theSmallImage.offsetTop, this._smallImagesWrapper);
+				this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
 			}
 			// if above
 			if (theSmallImage.offsetTop < this._smallImagesWrapper.scrollTop) {
 				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
-				this.animateScrollTo(theSmallImage.offsetTop, this._smallImagesWrapper);
+				this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
 			}
 			
 			// hide arrows
@@ -248,9 +252,10 @@
 
 		},
 		nextImage: function() {
-			this._currentImage++;
-			if (this._currentImage >= this.images.length) this._currentImage = 0;
-			this.setActiveImage();
+			if (this._currentImage + 1 < this.images.length) {
+				this._currentImage++;
+				this.setActiveImage();
+			}
 		},
 		prevImage: function() {
 			this._currentImage--;
