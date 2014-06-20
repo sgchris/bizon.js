@@ -207,7 +207,7 @@
 			// get full width/height
 			var containerWidth = this.container.clientWidth;
 			var containerHeight = this.container.clientHeight;
-			var bigImageWrapperWidth = Math.floor(containerWidth * 0.8);
+			var bigImageWrapperWidth = Math.floor(containerWidth * 0.85);
 			var bigImageWrapperRatio = bigImageWrapperWidth / containerHeight;
 			
 			// fix big image wrapper
@@ -215,7 +215,7 @@
 			this._bigImageWrapper.style.height = containerHeight + 'px';
 
 			// fix small images wrapper
-			var smallImagesWrapper = Math.floor(containerWidth * 0.2);
+			var smallImagesWrapper = Math.floor(containerWidth * 0.15);
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
 

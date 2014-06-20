@@ -1,10 +1,13 @@
 @CHARSET "UTF-8";
 
 
+.bizon {
+	background: #333;
+}
 .bizon-image-wrapper {
 	display: inline-block;
 	position: relative;
-	background: #FAFAFA;
+	
 }
 .bizon-image-wrapper img {
 	position: absolute;
@@ -18,7 +21,7 @@
 	position: absolute;
 	top: 40%;
 	padding: 10px;
-	background: #D5700B;
+	background: #C11;
 	opacity: 0.3;
 	color: #FFF;
 	font-size: 30px;
@@ -48,7 +51,6 @@
 	display: inline-block;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background: #000;
 }
 .bizon-small-image-wrapper {
 	display: inline-block;
@@ -59,5 +61,5 @@
 }
 	
 .bizon-small-image-wrapper.bizon-active {
-	background: #D5700B;
+	background: #C11;
 }
