@@ -54,6 +54,7 @@
 		// private //
 		
 		this._bigImage = null; // IMG
+		this._bigImageTitle = null; // DIV
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
 		this._currentImage = 0;
@@ -94,7 +95,7 @@
 
 			var animate = function(elem) {
 				var initialScrollTop = elem.scrollTop;
-				var maxScrollTop = elem.scrollHeight - elem.clientHeight
+				var maxScrollTop = elem.scrollHeight - elem.clientHeight;
 				var delta = Math.floor((finalScrollTo - initialScrollTop) / destinationDivide);
 				if (delta == 0 || (initialScrollTop >= maxScrollTop && finalScrollTo >= maxScrollTop)) {
 					return;
@@ -114,6 +115,31 @@
 				animate(elem);
 			}
 		})(),
+		// function(newHeight, elem)
+		animateHeightTo: (function() {
+			
+			var timeoutInterval = 10;
+			var destinationDivide = 3;
+			var finalHeight;
+			var winHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+			
+			var animate = function(elem) {
+				var initialHeight = elem.clientHeight;
+				var delta = Math.floor((finalHeight - initialHeight) / destinationDivide);
+				if (delta == 0) return;
+				
+				elem.style.height = (initialHeight + delta) + 'px';
+				
+				setTimeout(function() {
+					animate(elem);
+				}, timeoutInterval);
+			}
+			
+			return function(newHeight, elem) {
+				finalHeight = newHeight;
+				animate(elem);
+			}
+		})(),
 		loadImages: function() {
 			this.images = [];
 			
@@ -124,6 +150,8 @@
 					fullImageSrc: img.getAttribute('full-image-src'),
 					width: img.getAttribute('width'),
 					height: img.getAttribute('height'),
+					title: img.getAttribute('title'),
+					alt: img.getAttribute('alt'),
 					ratio: parseInt(img.getAttribute('width')) / parseInt(img.getAttribute('height'))
 				});
 			});
@@ -132,12 +160,17 @@
 			if (this.container.classList.contains('bizon-initialized')) return;
 			tools.empty(this.container);
 			
+			var albumTitle = this.container.getAttribute('title');
 			// big image
 			this._bigImage = tools.createElement('img', {'src':this.images[this._currentImage]['fullImageSrc']});
 			this._bigImageWrapper = tools.createElement('div', {'class':'bizon-image-wrapper'}, this._bigImage);
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right'}, '>'));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-left'}, '<'));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close'}, 'x'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-album-title'}, this.container.getAttribute('title') || 'Gallery'));
+			this._bigImageTitle = tools.createElement('div', {'class': 'bizon-image-title'}, 'Image description goes here...');
+			this._bigImageWrapper.appendChild(this._bigImageTitle);
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right', 'title': 'Next image'}, '>'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-left', 'title': 'Previous image'}, '<'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-full-screen', 'title': 'Full screen'}, '#'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close', 'title': 'Close'}, 'x'));
 			
 			// small images
 			this._smallImagesWrapper = tools.createElement('div', {'class':'bizon-small-images-wrapper'});
@@ -174,6 +207,9 @@
 			theSmallImage.classList.add('bizon-active');
 			this._bigImage.src = this.images[imgNumber]['fullImageSrc'];
 
+			// set image title
+			this._bigImageTitle.textContent = this.images[this._currentImage].alt || this.images[this._currentImage].alt; 
+			
 			// fix small images scroll
 			// if below
 			if (theSmallImage.offsetTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
@@ -262,6 +298,9 @@
 			if (this._currentImage < 0) this._currentImage = this.images.length - 1;
 			this.setActiveImage();
 		},
+		close: function() {
+			this.animateHeightTo(0, this.container);
+		},
 		bindEvents: function() {
 			var that = this;
 			
@@ -290,6 +329,13 @@
 			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
 				that.nextImage();
 			});
+			
+			// click on "close"
+			that.container.querySelector('.bizon-close').addEventListener('click', function() {
+				that.close();
+			});
+			
+			
 		}
 	};
 	

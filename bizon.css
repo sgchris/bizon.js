@@ -3,6 +3,7 @@
 
 .bizon {
 	background: #333;
+	overflow: hidden;
 }
 .bizon-image-wrapper {
 	display: inline-block;
@@ -15,11 +16,14 @@
 	cursor: pointer;
 	top: 0;
 }
+.bizon-image-wrapper .bizon-album-title,
+.bizon-image-wrapper .bizon-image-title,
 .bizon-image-wrapper .bizon-arrow-right,
 .bizon-image-wrapper .bizon-arrow-left,
-.bizon-image-wrapper .bizon-close {
+.bizon-image-wrapper .bizon-close,
+.bizon-image-wrapper .bizon-full-screen 
+{
 	position: absolute;
-	top: 40%;
 	padding: 10px;
 	background: #C11;
 	opacity: 0.3;
@@ -29,22 +33,63 @@
 	cursor: pointer;
 	line-height: 100px;
 }
-.bizon-image-wrapper .bizon-arrow-right:hover,
-.bizon-image-wrapper .bizon-arrow-left:hover,
-.bizon-image-wrapper .bizon-close:hover {
-	opacity: 0.8;
+.bizon-image-wrapper .bizon-album-title {
+	opacity: 0.5;
+	top: 10px;
+	font-size: 24px;
+	height: 30px;
+	line-height: 30px;
+	left: 10px;
+	padding: 0 10px;
+	margin:0;
 }
-
+.bizon-image-wrapper .bizon-image-title {
+	opacity: 0.5;
+	top: 50px;
+	font-size: 18px;
+	height: 20px;
+	line-height: 20px;
+	left: 10px;
+	padding: 0 10px;
+	margin:0;
+}
 .bizon-image-wrapper .bizon-arrow-right {
-	right: 10px;
+	top: 40%;
+	right: 0px;
 }
 .bizon-image-wrapper .bizon-arrow-left {
-	left: 10px;
+	top: 40%;
+	left: 0px;
 }
 .bizon-image-wrapper .bizon-close {
 	right: 10px;
 	top: 10px;
-	line-height: 20px;
+	height: 30px;
+	width: 30px;
+	text-align:center;
+	font-size: 26px;
+	font-weight: bold;
+	line-height: 30px;
+	padding:0;
+}
+.bizon-image-wrapper .bizon-full-screen {
+	right: 50px;
+	top: 10px;
+	height: 30px;
+	width: 30px;
+	text-align:center;
+	font-size: 26px;
+	font-weight: bold;
+	line-height: 30px;
+	padding:0;
+}
+.bizon-image-wrapper .bizon-album-title:hover,
+.bizon-image-wrapper .bizon-image-title:hover,
+.bizon-image-wrapper .bizon-arrow-right:hover,
+.bizon-image-wrapper .bizon-arrow-left:hover,
+.bizon-image-wrapper .bizon-full-screen:hover,
+.bizon-image-wrapper .bizon-close:hover {
+	opacity: 0.8;
 }
 
 .bizon-small-images-wrapper {
