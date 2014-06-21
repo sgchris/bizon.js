@@ -2,55 +2,62 @@
 	
 	// helping tools
 	var tools = {
-			// clear the dom element content
-			empty: function(DOMElem) {
-				while (DOMElem && DOMElem.firstChild) {
-					DOMElem.removeChild(DOMElem.firstChild);
-				}
-			},
-			
-			createElement: function (tag, attrs, content, isHtml) {
-				// create the element
-				var newElem = document.createElement(tag);
-				
-				// set attributes
-				if (attrs && attrs instanceof Object) {
-					for (var attrName in attrs) {
-						// validate value type
-						var valueType = typeof(attrs[attrName]);
-						if (['string', 'number'].indexOf(valueType) >= 0) {
-							newElem.setAttribute(attrName, attrs[attrName]);
-						}
-					}
-				}
-				
-				// set the content
-				if (content) {
-					if (content instanceof HTMLElement) {
-						newElem.appendChild(content);
-					} else if (isHtml) {
-						newElem.innerHTML = content;
-					} else {
-						newElem.textContent = content;
-					}
-				}
-				
-				return newElem;
-			},
-			
-			getElementIndex: function (elem) {
-				var i = 0;
-				while( (elem = elem.previousSibling) != null ) i++;
-				return i;
-			},
-			
-			getElementRelativeTop: function(elem) {
-				return elem.offsetTop - elem.parentNode.offsetTop;
+		// clear the dom element content
+		empty: function(DOMElem) {
+			while (DOMElem && DOMElem.firstChild) {
+				DOMElem.removeChild(DOMElem.firstChild);
 			}
+		},
+		
+		createElement: function (tag, attrs, content, isHtml) {
+			// create the element
+			var newElem = document.createElement(tag);
+			
+			// set attributes
+			if (attrs && attrs instanceof Object) {
+				for (var attrName in attrs) {
+					// validate value type
+					var valueType = typeof(attrs[attrName]);
+					if (['string', 'number'].indexOf(valueType) >= 0) {
+						newElem.setAttribute(attrName, attrs[attrName]);
+					}
+				}
+			}
+			
+			// set the content
+			if (content) {
+				if (content instanceof HTMLElement) {
+					newElem.appendChild(content);
+				} else if (isHtml) {
+					newElem.innerHTML = content;
+				} else {
+					newElem.textContent = content;
+				}
+			}
+			
+			return newElem;
+		},
+		
+		getElementIndex: function (elem) {
+			var i = 0;
+			while( (elem = elem.previousSibling) != null ) i++;
+			return i;
+		},
+		
+		getElementRelativeTop: function(elem) {
+			return elem.offsetTop - elem.parentNode.offsetTop;
+		}
 	};
 	
 	// define bizon object
 	var bizonObj = function(container) {
+		// private configurable // 
+		
+		// space between each small image and its wrapper
+		this._smallImagesPadding = 3;
+		// padding of the body
+		this._windowPadding = 15;
+
 		// private //
 		
 		this._bigImage = null; // IMG
@@ -58,13 +65,6 @@
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
 		this._currentImage = 0;
-		
-		// private configurable // 
-		
-		// space between each small image and its wrapper
-		this._smallImagesPadding = 3;
-		// padding of the body
-		this._windowPadding = 15;
 
 		// public // 
 		
@@ -84,8 +84,6 @@
 	};
 	
 	bizonObj.prototype = {
-
-
 		// function(scrollTo, elem)
 		animateScrollTo: (function() {
 
@@ -140,6 +138,7 @@
 				animate(elem);
 			}
 		})(),
+		// load images into an object
 		loadImages: function() {
 			this.images = [];
 			
@@ -156,6 +155,7 @@
 				});
 			});
 		},
+		// create initial DOM for the gallery
 		buildDom: function() {
 			if (this.container.classList.contains('bizon-initialized')) return;
 			tools.empty(this.container);
@@ -194,6 +194,7 @@
 
 			this.container.classList.add('bizon-initialized');
 		},
+		// set main image + scroll to thumb's place
 		setActiveImage: function(imgNumber) {
 			if (typeof(imgNumber) == 'undefined') imgNumber = this._currentImage; 
 			this._currentImage = imgNumber;
@@ -212,14 +213,15 @@
 			
 			// fix small images scroll
 			// if below
-			if (theSmallImage.offsetTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
+			var smallImageScrollTop = tools.getElementRelativeTop(theSmallImage);
+			if (smallImageScrollTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
 				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
 				this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
 			}
 			// if above
-			if (theSmallImage.offsetTop < this._smallImagesWrapper.scrollTop) {
+			if (smallImageScrollTop < this._smallImagesWrapper.scrollTop) {
 				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
-				this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
+				this.animateScrollTo(smallImageScrollTop, this._smallImagesWrapper);
 			}
 			
 			// hide arrows
@@ -237,6 +239,7 @@
 			
 			this.fixSize();
 		},
+		// fix elements sized according to the image/screen
 		fixSize: function() {
 			var that = this;
 			
@@ -287,20 +290,24 @@
 			}
 
 		},
+		// go to the next image (if there is)
 		nextImage: function() {
 			if (this._currentImage + 1 < this.images.length) {
 				this._currentImage++;
 				this.setActiveImage();
 			}
 		},
+		// go to the previous image (if there is)
 		prevImage: function() {
 			this._currentImage--;
 			if (this._currentImage < 0) this._currentImage = this.images.length - 1;
 			this.setActiveImage();
 		},
+		// close (slide-up) the gallery (DOM is not removed, it becomes height 0)
 		close: function() {
 			this.animateHeightTo(0, this.container);
 		},
+		// bind gallery events
 		bindEvents: function() {
 			var that = this;
 			

@@ -4,6 +4,14 @@
 .bizon {
 	background: #333;
 	overflow: hidden;
+	
+	/* disable selection */
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 .bizon-image-wrapper {
 	display: inline-block;
@@ -15,6 +23,7 @@
 	display: inline-block;
 	cursor: pointer;
 	top: 0;
+	box-shadow: 0 0 100px #000;
 }
 .bizon-image-wrapper .bizon-album-title,
 .bizon-image-wrapper .bizon-image-title,
@@ -39,7 +48,7 @@
 	font-size: 24px;
 	height: 30px;
 	line-height: 30px;
-	left: 10px;
+	left: 0;
 	padding: 0 10px;
 	margin:0;
 }
@@ -49,13 +58,13 @@
 	font-size: 18px;
 	height: 20px;
 	line-height: 20px;
-	left: 10px;
+	left: 0;
 	padding: 0 10px;
 	margin:0;
 }
 .bizon-image-wrapper .bizon-arrow-right {
 	top: 40%;
-	right: 0px;
+	right: 10px;
 }
 .bizon-image-wrapper .bizon-arrow-left {
 	top: 40%;
