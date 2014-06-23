@@ -272,7 +272,7 @@
 			// get full width/height
 			var containerWidth = this.container.clientWidth;
 			var containerHeight = this.container.clientHeight;
-			var bigImageWrapperWidth = Math.floor(containerWidth * 0.85);
+			var bigImageWrapperWidth = Math.floor(containerWidth * 0.85) - 20;
 			var bigImageWrapperRatio = bigImageWrapperWidth / containerHeight;
 			
 			// fix big image wrapper
@@ -283,6 +283,7 @@
 			var smallImagesWrapper = Math.floor(containerWidth * 0.15);
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
+			this._smallImagesWrapper.style.marginLeft = '20px';
 
 			// fix small images
 			[].forEach.call(this._smallImagesWrapper.querySelectorAll('.bizon-small-image-wrapper'), function(elem) {
