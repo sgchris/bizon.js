@@ -138,6 +138,31 @@
 				animate(elem);
 			}
 		})(),
+		// function(newHeight, elem)
+		fadeOut: (function() {
+			
+			var elemOpacity = 1;
+			var timeoutInterval = 10;
+			var _fadeOut = function(elem, callbackFn) {
+				if (elemOpacity >= 0) {
+					elemOpacity-= 0.2;
+					elem.style.opacity = elemOpacity;
+					
+					setTimeout(function() {
+						_fadeOut(elem, callbackFn);
+					}, timeoutInterval);
+				} else {
+					if (typeof(callbackFn) == 'function') {
+						callbackFn();
+					}
+				}
+			}
+			
+			return function(elem, callbackFn) {
+				elemOpacity = 1;
+				_fadeOut(elem, callbackFn);
+			}
+		})(),
 		// load images into an object
 		loadImages: function() {
 			this.images = [];
@@ -237,6 +262,7 @@
 				this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'visible';
 			}
 			
+			this._bigImage.style.opacity = 1;
 			this.fixSize();
 		},
 		// fix elements sized according to the image/screen
@@ -294,14 +320,21 @@
 		nextImage: function() {
 			if (this._currentImage + 1 < this.images.length) {
 				this._currentImage++;
-				this.setActiveImage();
+				var that = this;
+				this.fadeOut(this._bigImage, function() {
+					that.setActiveImage();
+				});
 			}
 		},
 		// go to the previous image (if there is)
 		prevImage: function() {
 			this._currentImage--;
-			if (this._currentImage < 0) this._currentImage = this.images.length - 1;
-			this.setActiveImage();
+			if (this._currentImage >= 0) {
+				var that = this;
+				this.fadeOut(this._bigImage, function() {
+					that.setActiveImage();
+				});
+			} 
 		},
 		// close (slide-up) the gallery (DOM is not removed, it becomes height 0)
 		close: function() {
