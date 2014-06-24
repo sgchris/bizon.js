@@ -16,13 +16,13 @@
 			// set attributes
 			if (attrs && attrs instanceof Object) {
 				for (var attrName in attrs) {
-          if (typeof(attrs[attrName]) !== 'function') {
-            // validate value type
-            var valueType = typeof(attrs[attrName]);
-            if (['string', 'number'].indexOf(valueType) >= 0) {
-              newElem.setAttribute(attrName, attrs[attrName]);
-            }
-          }
+					if (typeof(attrs[attrName]) !== 'function') {
+						// validate value type
+						var valueType = typeof(attrs[attrName]);
+						if (['string', 'number'].indexOf(valueType) >= 0) {
+							newElem.setAttribute(attrName, attrs[attrName]);
+						}
+					}
 				}
 			}
 
