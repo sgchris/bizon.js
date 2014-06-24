@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // or using jquery
 $(document).ready(function() {
-  bizon(document.getElementById("my-gallery"));
+  bizon($("#my-gallery").get(0));
 });
 </script>
 ```
