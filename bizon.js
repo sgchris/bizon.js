@@ -121,21 +121,24 @@
 			var finalHeight;
 			var winHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 			
-			var animate = function(elem) {
+			var animate = function(elem, callbackFn) {
 				var initialHeight = elem.clientHeight;
 				var delta = Math.floor((finalHeight - initialHeight) / destinationDivide);
-				if (delta == 0) return;
+				if (delta == 0) {
+					if (typeof(callbackFn) == 'function') callbackFn();
+					return;
+				}
 				
 				elem.style.height = (initialHeight + delta) + 'px';
 				
 				setTimeout(function() {
-					animate(elem);
+					animate(elem, callbackFn);
 				}, timeoutInterval);
 			}
 			
-			return function(newHeight, elem) {
+			return function(newHeight, elem, callbackFn) {
 				finalHeight = newHeight;
-				animate(elem);
+				animate(elem, callbackFn);
 			}
 		})(),
 		// function(newHeight, elem)
@@ -339,7 +342,10 @@
 		},
 		// close (slide-up) the gallery (DOM is not removed, it becomes height 0)
 		close: function() {
-			this.animateHeightTo(0, this.container);
+			var that = this;
+			this.animateHeightTo(0, this.container, function() {
+				that.container.parentNode.removeChild(that.container);
+			});
 		},
 		// bind gallery events
 		bindEvents: function() {
