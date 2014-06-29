@@ -67,6 +67,8 @@
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
 		this._currentImage = 0;
+		
+		this._callbacks = {};
 
 		// public // 
 
@@ -86,6 +88,24 @@
 	};
 
 	bizonObj.prototype = {
+		on: function(eventName, callbackFn) {
+			if (typeof(this._callbacks[eventName]) == 'undefined') {
+				this._callbacks[eventName] = [];
+			}
+			
+			this._callbacks[eventName].push(callbackFn);
+		},
+		
+		_trigger: function(eventName) {
+			if (this._callbacks[eventName]) {
+				this._callbacks[eventName].forEach(function(callbackFn) {
+					if (typeof(callbackFn) == 'function') {
+						callbackFn();
+					}
+				});
+			}
+		},
+			
 		// function(scrollTo, elem)
 		animateScrollTo: (function() {
 
@@ -274,7 +294,7 @@
 			// get full width/height
 			var containerWidth = this.container.clientWidth;
 			var containerHeight = this.container.clientHeight;
-			var bigImageWrapperWidth = Math.floor(containerWidth * 0.90) - 20;
+			var bigImageWrapperWidth = Math.floor(containerWidth * 0.95) - 20;
 			var bigImageWrapperRatio = bigImageWrapperWidth / containerHeight;
 
 			// fix big image wrapper
@@ -282,7 +302,7 @@
 			this._bigImageWrapper.style.height = containerHeight + 'px';
 
 			// fix small images wrapper
-			var smallImagesWrapper = Math.floor(containerWidth * 0.10);
+			var smallImagesWrapper = Math.floor(containerWidth * 0.05);
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
 			this._smallImagesWrapper.style.marginLeft = '20px';
@@ -345,6 +365,8 @@
 			this.animateHeightTo(0, this.container, function() {
 				that.container.parentNode.removeChild(that.container);
 			});
+			
+			this._trigger('close');
 		},
 		// bind gallery events
 		bindEvents: function() {
