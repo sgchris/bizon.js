@@ -2,7 +2,7 @@
 
 
 .bizon {
-	background: #333;
+	background: #000;
 	overflow: hidden;
 	
 	/* disable selection */
@@ -14,16 +14,14 @@
 	user-select: none;
 }
 .bizon-image-wrapper {
-	display: inline-block;
+	float: left;
 	position: relative;
-	
 }
 .bizon-image-wrapper img {
 	position: absolute;
-	display: inline-block;
+	display: block;
 	cursor: pointer;
 	top: 0;
-	box-shadow: 0 0 100px #000;
 }
 .bizon-image-wrapper .bizon-album-title,
 .bizon-image-wrapper .bizon-image-title,
@@ -102,7 +100,7 @@
 }
 
 .bizon-small-images-wrapper {
-	display: inline-block;
+	float: right;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
