@@ -69,18 +69,21 @@
 		this._currentImage = 0;
 		
 		this._callbacks = {};
+		
+		this._fullScreenMode = false;
 
 		// public // 
 
 		this.container = container;
 		this.images = [];
+		
+		// initializers 
+
 		this.loadImages();
 		this.buildDom();
 		this.bindEvents();
 		this.fixSize();
-
-		// initializers 
-
+		
 		var that = this;
 		window.addEventListener('resize', function() {
 			that.fixSize();
@@ -242,7 +245,7 @@
 			this.container.classList.add('bizon-initialized');
 		},
 		// set main image + scroll to thumb's place
-		setActiveImage: function(imgNumber, fullScreen) {
+		setActiveImage: function(imgNumber) {
 			if (typeof(imgNumber) == 'undefined') imgNumber = this._currentImage; 
 			this._currentImage = imgNumber;
 
@@ -250,7 +253,7 @@
 			var currentActiveElem = this._smallImagesWrapper.querySelector('.bizon-active');
 			if (currentActiveElem) currentActiveElem.classList.remove('bizon-active');
 
-			// set active;
+			// mark relevant small image as active 
 			var theSmallImage = this._smallImagesWrapper.querySelectorAll('div.bizon-small-image-wrapper')[imgNumber];
 			if (theSmallImage) {
 				theSmallImage.classList.add('bizon-active');
@@ -295,9 +298,34 @@
 			var that = this;
 
 			// get full width/height
-			var containerWidth = this.container.clientWidth;
-			var containerHeight = this.container.clientHeight;
-			var bigImageWrapperWidth = Math.floor(containerWidth * 0.95) - 20;
+			var containerWidth, containerHeight,
+				bigImageWrapperWidth;
+			
+			if (this._fullScreenMode) {
+				// set width and height as the size of the window
+				containerWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+				containerHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+				bigImageWrapperWidth = containerWidth - 20
+				
+				this.container.style.position = 'absolute';
+				this.container.style.left = 0;
+				this.container.style.top = 0;
+				this.container.style.width = containerWidth + 'px';
+				this.container.style.height = containerHeight + 'px';
+				
+			} else {
+				// set width and height as the size of the container
+				containerWidth = this.container.clientWidth;
+				containerHeight = this.container.clientHeight;
+				bigImageWrapperWidth = Math.floor(containerWidth * 0.95) - 20
+
+//				this.container.style.position = 'relative';
+//				this.container.style.left = 0;
+//				this.container.style.top = 0;
+//				this.container.style.width = this._initialContainerWidth + 'px';
+//				this.container.style.height = this._initialContainerHeight + 'px';
+			}
+			
 			var bigImageWrapperRatio = bigImageWrapperWidth / containerHeight;
 
 			// fix big image wrapper
@@ -309,6 +337,11 @@
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
 			this._smallImagesWrapper.style.marginLeft = '20px';
+			if (this._fullScreenMode) {
+				this._smallImagesWrapper.style.display = 'none';
+			} else {
+				this._smallImagesWrapper.style.display = 'block';
+			}
 
 			// fix small images
 			[].forEach.call(this._smallImagesWrapper.querySelectorAll('.bizon-small-image-wrapper'), function(elem) {
@@ -398,7 +431,8 @@
 
 			// click "fullscreen"
 			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
-				// ..
+				that._fullScreenMode = !that._fullScreenMode;
+				that.setActiveImage();
 			});
 			
 			var timer = null;
@@ -419,7 +453,6 @@
 				}
 				
 			});
-			
 			
 			// click on main image 
 			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
