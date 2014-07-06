@@ -242,7 +242,7 @@
 			this.container.classList.add('bizon-initialized');
 		},
 		// set main image + scroll to thumb's place
-		setActiveImage: function(imgNumber) {
+		setActiveImage: function(imgNumber, fullScreen) {
 			if (typeof(imgNumber) == 'undefined') imgNumber = this._currentImage; 
 			this._currentImage = imgNumber;
 
@@ -393,6 +393,11 @@
 				that.prevImage();
 			});
 
+			// click "fullscreen"
+			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
+				that.prevImage();
+			});
+			
 			// click on main image 
 			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
 				that.nextImage();
