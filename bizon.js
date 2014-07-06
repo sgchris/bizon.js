@@ -251,8 +251,11 @@
 			if (currentActiveElem) currentActiveElem.classList.remove('bizon-active');
 
 			// set active;
-			var theSmallImage = this._smallImagesWrapper.querySelectorAll('div.bizon-small-image-wrapper')[imgNumber]; 
-			theSmallImage.classList.add('bizon-active');
+			var theSmallImage = this._smallImagesWrapper.querySelectorAll('div.bizon-small-image-wrapper')[imgNumber];
+			if (theSmallImage) {
+				theSmallImage.classList.add('bizon-active');
+			}
+			
 			this._bigImage.src = this.images[imgNumber].fullImageSrc;
 
 			// set image title
@@ -351,8 +354,8 @@
 		},
 		// go to the previous image (if there is)
 		prevImage: function() {
-			this._currentImage--;
-			if (this._currentImage >= 0) {
+			if (this._currentImage > 0) {
+				this._currentImage--;
 				var that = this;
 				this.fadeOut(this._bigImage, function() {
 					that.setActiveImage();
@@ -395,8 +398,28 @@
 
 			// click "fullscreen"
 			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
-				that.prevImage();
+				// ..
 			});
+			
+			var timer = null;
+			window.addEventListener('keydown', function(evt) {
+				if (timer) clearTimeout(timer);
+				// check press button right
+				if (evt.keyCode == 39) {
+					timer = setTimeout(function() {
+						that.nextImage();
+					}, 10);
+				}
+				
+				// check press button left
+				if (evt.keyCode == 37) {
+					timer = setTimeout(function() {
+						that.prevImage();
+					}, 10);
+				}
+				
+			});
+			
 			
 			// click on main image 
 			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
