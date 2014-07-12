@@ -71,6 +71,8 @@
 		this._callbacks = {};
 		
 		this._fullScreenMode = false;
+		this._initialContainerWidth = container.clientWidth;
+		this._initialContainerHeight = container.clientHeight;
 
 		// public // 
 
@@ -315,9 +317,13 @@
 				
 			} else {
 				// set width and height as the size of the container
-				containerWidth = this.container.clientWidth;
-				containerHeight = this.container.clientHeight;
+				containerWidth = this._initialContainerWidth; // this.container.clientWidth;
+				containerHeight = this._initialContainerHeight;
 				bigImageWrapperWidth = Math.floor(containerWidth * 0.95) - 20
+
+				this.container.style.position = 'relative';
+				this.container.style.width = containerWidth + 'px';
+				this.container.style.height = containerHeight + 'px';
 
 //				this.container.style.position = 'relative';
 //				this.container.style.left = 0;
