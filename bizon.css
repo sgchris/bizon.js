@@ -106,10 +106,10 @@
 }
 .bizon-small-image-wrapper {
 	display: inline-block;
-	padding: 10px;
 }
 .bizon-small-image-wrapper img {
 	cursor: pointer;
+	display: block;
 }
 	
 .bizon-small-image-wrapper.bizon-active {

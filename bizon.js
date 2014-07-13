@@ -72,7 +72,7 @@
 		this._bigImageTitle = null; // DIV
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
-		this._smallImagesWrapperMinWidth = 100;
+		this._smallImagesWrapperMinWidth = 80;
 		this._currentImage = 0;
 		
 		this._callbacks = {};
