@@ -1,3 +1,9 @@
+/**
+ * @TODO
+ * - add "up" and "down" arrows for navigation
+ * - open the gallery immediately in full screen mode
+ * - add callbacks
+ */
 ;(function() {
 
 	// helping tools
@@ -66,6 +72,7 @@
 		this._bigImageTitle = null; // DIV
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
+		this._smallImagesWrapperMinWidth = 100;
 		this._currentImage = 0;
 		
 		this._callbacks = {};
@@ -324,22 +331,22 @@
 				this.container.style.position = 'relative';
 				this.container.style.width = containerWidth + 'px';
 				this.container.style.height = containerHeight + 'px';
-
-//				this.container.style.position = 'relative';
-//				this.container.style.left = 0;
-//				this.container.style.top = 0;
-//				this.container.style.width = this._initialContainerWidth + 'px';
-//				this.container.style.height = this._initialContainerHeight + 'px';
 			}
 			
+			// fix small/big images wrapper
+			var smallImagesWrapper = Math.floor(containerWidth * 0.05);
+			if (smallImagesWrapper < this._smallImagesWrapperMinWidth) {
+				var deltaTillMinimum = this._smallImagesWrapperMinWidth - smallImagesWrapper;
+				smallImagesWrapper = this._smallImagesWrapperMinWidth;
+				bigImageWrapperWidth-= deltaTillMinimum;
+			}
+
 			var bigImageWrapperRatio = bigImageWrapperWidth / containerHeight;
 
 			// fix big image wrapper
 			this._bigImageWrapper.style.width = bigImageWrapperWidth + 'px';
 			this._bigImageWrapper.style.height = containerHeight + 'px';
 
-			// fix small images wrapper
-			var smallImagesWrapper = Math.floor(containerWidth * 0.05);
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
 			this._smallImagesWrapper.style.marginLeft = '20px';
