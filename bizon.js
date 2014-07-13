@@ -1,8 +1,8 @@
 /**
  * @TODO
- * - add "up" and "down" arrows for navigation
  * - open the gallery immediately in full screen mode
  * - add callbacks
+ * - fix - display image only after it's loaded completely
  */
 ;(function() {
 
@@ -451,15 +451,15 @@
 			var timer = null;
 			window.addEventListener('keydown', function(evt) {
 				if (timer) clearTimeout(timer);
-				// check press button right
-				if (evt.keyCode == 39) {
+				// check press button "right"
+				if (evt.keyCode == 39 || evt.keyCode == 40) {
 					timer = setTimeout(function() {
 						that.nextImage();
 					}, 10);
 				}
 				
-				// check press button left
-				if (evt.keyCode == 37) {
+				// check press button "left"
+				if (evt.keyCode == 37 || evt.keyCode == 38) {
 					timer = setTimeout(function() {
 						that.prevImage();
 					}, 10);
