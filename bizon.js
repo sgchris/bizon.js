@@ -54,17 +54,33 @@
 
 		getElementRelativeTop: function(elem) {
 			return elem.offsetTop - elem.parentNode.offsetTop;
+		},
+
+		// merge two objects, override obj1 properties with obj2 properties
+		merge_objects: function(obj1, obj2) {
+			var obj3 = {};
+			for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+			for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+			return obj3;
 		}
 	};
 
 	// define bizon object
-	var bizonObj = function(container) {
+	var bizonObj = function(container, options) {
 		// private configurable // 
 
+		// set default options
+		var defaultOptions = {
+			'fullScreen': false,
+			'smallImagesWrapperMinWidth': 80,
+			'smallImagesPadding': 3
+		};
+		options = tools.merge_objects(defaultOptions, options);
+
 		// space between each small image and its wrapper
-		this._smallImagesPadding = 3;
-		// padding of the body
-		this._windowPadding = 15;
+		this._smallImagesPadding = options['smallImagesPadding'];
+		// min width of the small images area
+		this._smallImagesWrapperMinWidth = options['smallImagesWrapperMinWidth'];
 
 		// private //
 
@@ -72,12 +88,11 @@
 		this._bigImageTitle = null; // DIV
 		this._bigImageWrapper = null; // DIV (>IMG)
 		this._smallImagesWrapper = null; // DIV (>DIVs>IMG)
-		this._smallImagesWrapperMinWidth = 80;
 		this._currentImage = 0;
 		
 		this._callbacks = {};
 		
-		this._fullScreenMode = false;
+		this._fullScreenMode = options['fullScreen'];
 		this._initialContainerWidth = container.clientWidth;
 		this._initialContainerHeight = container.clientHeight;
 
@@ -482,14 +497,14 @@
 	};
 
 	// define main bizon function
-	window.bizon = function(container) {
-		return new bizonObj(container);
+	window.bizon = function(container, options) {
+		return new bizonObj(container, options);
 	};
 
 	// initialize bizon galleries - all elements with class "bizon"
 	document.addEventListener('DOMContentLoaded', function() {
 		[].forEach.call(document.querySelectorAll('.bizon'), function(bizonContainer) {
-			window.bizon(bizonContainer);
+			window.bizon(bizonContainer, {'fullScreen': true});
 		});
 	}, false);
 
