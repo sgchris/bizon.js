@@ -1,6 +1,6 @@
 /**
  * @TODO
- * - open the gallery immediately in full screen mode
+ * - slide the titles left after X seconds, on mouse over bring them back
  * - add callbacks
  * - fix - display image only after it's loaded completely
  */
@@ -8,6 +8,16 @@
 
 	// helping tools
 	var tools = {
+		domReady: function(callbackFn) {
+			if (typeof(callbackFn) !== 'function') {
+				return;
+			}
+			if (document.readyState === 'complete' || document.readyState === 'interactive') {
+				callbackFn();
+			} else {
+				document.addEventListener('DOMContentLoaded', callbackFn);
+			}
+		},
 		// clear the dom element content
 		empty: function(DOMElem) {
 			while (DOMElem && DOMElem.firstChild) {
@@ -151,14 +161,16 @@
 				var nextScrollTop = initialScrollTop + delta;
 				elem.scrollTop = nextScrollTop;
 
-				setTimeout(function() {
+				requestAnimationFrame(function() {
 					animate(elem);
-				}, timeoutInterval);
+				});
 			};
 
 			return function(scrollTo, elem) {
 				finalScrollTo = scrollTo;
-				animate(elem);
+				requestAnimationFrame(function() {
+					animate(elem);
+				});
 			};
 		})(),
 		// function(newHeight, elem)
@@ -178,16 +190,19 @@
 
 				elem.style.height = (initialHeight + delta) + 'px';
 
-				setTimeout(function() {
+				requestAnimationFrame(function() {
 					animate(elem, callbackFn);
-				}, timeoutInterval);
+				});
 			};
 
 			return function(newHeight, elem, callbackFn) {
 				finalHeight = newHeight;
-				animate(elem, callbackFn);
+				requestAnimationFrame(function() {
+					animate(elem, callbackFn);
+				});
 			};
 		})(),
+
 		// function(newHeight, elem)
 		fadeOut: (function() {
 
@@ -198,9 +213,9 @@
 					elemOpacity-= 0.2;
 					elem.style.opacity = elemOpacity;
 
-					setTimeout(function() {
+					requestAnimationFrame(function() {
 						_fadeOut(elem, callbackFn);
-					}, timeoutInterval);
+					});
 				} else {
 					if (typeof(callbackFn) == 'function') {
 						callbackFn();
@@ -210,7 +225,9 @@
 
 			return function(elem, callbackFn) {
 				elemOpacity = 1;
-				_fadeOut(elem, callbackFn);
+				requestAnimationFrame(function() {
+					_fadeOut(elem, callbackFn);
+				});
 			};
 		})(),
 		// load images into an object
@@ -219,21 +236,26 @@
 
 			var that = this;
 			[].forEach.call(this.container.querySelectorAll('img'), function(img) {
+				var imgWidth = parseInt(img.getAttribute('width')) || that._initialContainerWidth,
+					imgHeight = parseInt(img.getAttribute('height')) || that._initialContainerHeight;
 				that.images.push({
 					src: img.getAttribute('src'), 
-					fullImageSrc: img.getAttribute('full-image-src'),
-					width: img.getAttribute('width'),
-					height: img.getAttribute('height'),
+					fullImageSrc: img.getAttribute('full-image-src') || img.getAttribute('src'),
+					width: imgWidth,
+					height: imgHeight,
 					title: img.getAttribute('title'),
 					alt: img.getAttribute('alt'),
-					ratio: parseInt(img.getAttribute('width')) / parseInt(img.getAttribute('height'))
+					ratio: imgWidth / imgHeight
 				});
 			});
 		},
 		// create initial DOM for the gallery
 		buildDom: function() {
-			if (this.container.classList.contains('bizon-initialized')) return;
+			//if (this.container.classList.contains('bizon-initialized')) return;
 			tools.empty(this.container);
+			if (!this.container.classList.contains('bizon')) {
+				this.container.classList.add('bizon');
+			}
 
 			// big image
 			this._bigImage = tools.createElement('img', {'src':this.images[this._currentImage].fullImageSrc});
@@ -286,7 +308,7 @@
 			this._bigImage.src = this.images[imgNumber].fullImageSrc;
 
 			// set image title
-			this._bigImageTitle.textContent = this.images[this._currentImage].alt || this.images[this._currentImage].alt; 
+			this._bigImageTitle.textContent = this.images[this._currentImage].alt || this.images[this._currentImage].title; 
 
 			// fix small images scroll
 			// if below
@@ -479,6 +501,11 @@
 						that.prevImage();
 					}, 10);
 				}
+
+				if (evt.keyCode == 27) {
+					that._fullScreenMode = false;
+					that.setActiveImage();
+				}
 				
 			});
 			
@@ -502,10 +529,12 @@
 	};
 
 	// initialize bizon galleries - all elements with class "bizon"
-	document.addEventListener('DOMContentLoaded', function() {
-		[].forEach.call(document.querySelectorAll('.bizon'), function(bizonContainer) {
-			window.bizon(bizonContainer, {'fullScreen': true});
+	if (location.hash.length > 0 && location.hash === '#autoload') {
+		tools.domReady(function() {
+			[].forEach.call(document.querySelectorAll('.bizon'), function(bizonContainer) {
+				window.bizon(bizonContainer);
+			});
 		});
-	}, false);
+	}
 
 })();

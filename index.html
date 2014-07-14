@@ -4,21 +4,36 @@
 	<meta charset="utf-8">
 	<title>Bizon.js demo page</title>
 	<link rel="stylesheet" href="bizon.css" />
-	<script src="bizon.js"></script>
+	<script src='lib/request-animation-frame.js'></script>
+	<script src='bizon.js'></script>
 </head>
 <body>
-	<div class="bizon" style="width: 800px; height: 480px;">
-		<img src="images/mondial2014 (1).jpg" full-image-src="images/mondial2014 (1).jpg" width="640" height="480" title="mondial 2014 #1" alt="mondial 2014 #1" />
-		<img src="images/mondial2014 (2).jpg" full-image-src="images/mondial2014 (2).jpg" width="640" height="480" title="mondial 2014 #2" alt="mondial 2014 #2" />
-		<img src="images/mondial2014 (3).jpg" full-image-src="images/mondial2014 (3).jpg" width="640" height="480" title="mondial 2014 #3" alt="mondial 2014 #3" />
-		<img src="images/mondial2014 (4).jpg" full-image-src="images/mondial2014 (4).jpg" width="640" height="480" title="mondial 2014 #4" alt="mondial 2014 #4" />
-		<img src="images/mondial2014 (5).jpg" full-image-src="images/mondial2014 (5).jpg" width="640" height="480" title="mondial 2014 #5" alt="mondial 2014 #5" />
-		<img src="images/mondial2014 (6).jpg" full-image-src="images/mondial2014 (6).jpg" width="640" height="480" title="mondial 2014 #6" alt="mondial 2014 #6" />
-		<img src="images/mondial2014 (7).jpg" full-image-src="images/mondial2014 (7).jpg" width="640" height="480" title="mondial 2014 #7" alt="mondial 2014 #7" />
-		<img src="images/mondial2014 (8).jpg" full-image-src="images/mondial2014 (8).jpg" width="640" height="480" title="mondial 2014 #8" alt="mondial 2014 #8" />
-		<img src="images/mondial2014 (9).jpg" full-image-src="images/mondial2014 (9).jpg" width="640" height="480" title="mondial 2014 #9" alt="mondial 2014 #9" />
-		<img src="images/mondial2014 (10).jpg" full-image-src="images/mondial2014 (10).jpg" width="640" height="480" title="mondial 2014 #10" alt="mondial 2014 #10" />
-		<img src="images/mondial2014 (11).jpg" full-image-src="images/mondial2014 (11).jpg" width="640" height="480" title="mondial 2014 #11" alt="mondial 2014 #11" />
-	</div>
+	<div id="bizon-gallery-wrapper" style="width: 800px; height: 480px;"></div>
+	<script>
+		var tag = 'Smells like teen spirit';
+		// defined flickr callback
+		var processResults = function(res) {
+			var bizonDiv = document.getElementById('bizon-gallery-wrapper');
+			bizonDiv.setAttribute('title', tag);
+			res.responseData.results.forEach(function(item) {
+				var newImg = document.createElement('img');
+				newImg.src = item.url;
+				newImg.setAttribute('height', item.height);
+				newImg.setAttribute('width', item.width);
+				newImg.setAttribute('title', item.titleNoFormatting);
+				bizonDiv.appendChild(newImg);
+			});
+
+			// initialize bizon gallery
+			bizon(bizonDiv);
+		};
+
+		// load google images
+
+		var script = document.createElement('script');
+		script.src = 'http://ajax.googleapis.com/ajax/services/search/images?v=1.0&q='+encodeURIComponent(tag)+'&callback=processResults&imgsz=medium&rsz=8';
+		document.querySelector('head').appendChild(script);
+
+	</script>
 </body>
 </html>
