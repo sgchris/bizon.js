@@ -1,6 +1,36 @@
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+// MIT license
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
 /**
  * @TODO
  * - slide the titles left after X seconds, on mouse over bring them back
+ * - apply touch events (look for ready solutions)
  * - add callbacks
  * - fix - display image only after it's loaded completely
  */
@@ -72,7 +102,72 @@
 			for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
 			for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
 			return obj3;
-		}
+		},
+
+		// animate(elem, [{property: 'height', start: '10px', end: '100px'}, {..}, ..]
+		// OR
+		// animate(elem, {property: 'height', start: '10px', end: '100px'});
+		// TODO
+		// - work with non css properties (like scrollTop)
+		animate: (function() {
+			var destinationDivide = 3;
+			var animate = function(elem, properties) {
+				var stopAnimationCount = 0;
+
+				properties.forEach(function(prop) {
+					var hasPx = (elem.style[prop.property].toLowerCase().indexOf('px') >= 0);
+					var initialValue = parseFloat(elem.style[prop.property]);
+					var finalValue = parseFloat(prop.end);
+					var delta;
+					if (Math.abs(finalValue - initialValue) < destinationDivide) {
+						delta = finalValue - initialValue;
+					} else {
+						if (hasPx) {
+							delta = Math.round((finalValue - initialValue) / destinationDivide);
+						} else {
+							delta = ((finalValue - initialValue) / destinationDivide);
+						}
+					}
+
+					if (delta === 0) {
+						stopAnimationCount ++;
+					} else {
+						var nextValue = initialValue + delta;
+						if (hasPx) {
+							elem.style[prop.property] = nextValue + 'px';
+						} else {
+							elem.style[prop.property] = nextValue;
+						}
+					}
+				});
+
+				if (stopAnimationCount < properties.length) {
+					requestAnimationFrame(function() {
+						animate(elem, properties);
+					});
+				}
+			};
+
+			// several properties
+			// properties = [{property:'left', start:0, end:'300px'}, {property:'width', start:'100px', end:'400px'}, ...]
+
+			// or one
+			// properties = {property:'left', start:0, end:'300px'}
+			return function(elem, properties) {
+				console.log('properties', properties);
+				if (!(properties instanceof Array)) properties = [properties];
+
+				// set initial values
+				properties.forEach(function(prop) {
+					console.log('setting initial value of '+prop.property+' with '+prop.start);
+					elem.style[prop.property] = prop.start;
+				});
+
+				requestAnimationFrame(function() {
+					animate(elem, properties);
+				});
+			};
+		})()
 	};
 
 	// define bizon object
@@ -174,7 +269,10 @@
 			};
 		})(),
 		// function(newHeight, elem)
-		animateHeightTo: (function() {
+		animateHeightTo: function(newHeight, elem) {
+			tools.animate(elem, {property: 'height', start: elem.clientHeight + 'px', end: newHeight + 'px'});
+		},
+		_animateHeightTo: (function() {
 
 			var timeoutInterval = 10;
 			var destinationDivide = 3;
@@ -519,7 +617,16 @@
 				that.close();
 			});
 
-
+			// swipe left - next image
+			if (window.$$) {
+				var hm = $$(this.container);
+				hm.swipeLeft(function() {
+					that.nextImage();
+				});
+				hm.swipeRight(function() {
+					that.prevImage();
+				});
+			}
 		}
 	};
 
