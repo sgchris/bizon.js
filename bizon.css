@@ -39,6 +39,9 @@
 	font-weight: bold;
 	cursor: pointer;
 	line-height: 100px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .bizon-image-wrapper .bizon-album-title {
 	opacity: 0.5;
@@ -47,8 +50,9 @@
 	height: 30px;
 	line-height: 30px;
 	left: 0;
-	padding: 0 10px;
+	padding: 0 30px 0 10px;
 	margin:0;
+	border-radius: 0 5px 5px 0;
 }
 .bizon-image-wrapper .bizon-image-title {
 	opacity: 0.5;
@@ -57,8 +61,9 @@
 	height: 20px;
 	line-height: 20px;
 	left: 0;
-	padding: 0 10px;
+	padding: 0 30px 0 10px;
 	margin:0;
+	border-radius: 0 5px 5px 0;
 }
 .bizon-image-wrapper .bizon-arrow-right {
 	top: 40%;

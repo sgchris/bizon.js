@@ -29,7 +29,7 @@
 
 /**
  * @TODO
- * - slide the titles left after X seconds, on mouse over bring them back
+ * - the slide titles looks bad - make it on a transparent tapet at the bottom
  * - apply touch events (look for ready solutions)
  * - add callbacks
  * - fix - display image only after it's loaded completely
@@ -107,11 +107,14 @@
 		// animate(elem, [{property: 'height', start: '10px', end: '100px'}, {..}, ..]
 		// OR
 		// animate(elem, {property: 'height', start: '10px', end: '100px'});
+		// OR (with callback)
+		// animate(elem, {property: 'height', start: '10px', end: '100px'}, function() { alert('finished'); });
+		//
 		// TODO
 		// - work with non css properties (like scrollTop)
 		animate: (function() {
 			var destinationDivide = 3;
-			var animate = function(elem, properties) {
+			var animate = function(elem, properties, callbackFn) {
 				var stopAnimationCount = 0;
 
 				properties.forEach(function(prop) {
@@ -119,7 +122,9 @@
 					var initialValue = parseFloat(elem.style[prop.property]);
 					var finalValue = parseFloat(prop.end);
 					var delta;
-					if (Math.abs(finalValue - initialValue) < destinationDivide) {
+
+					// calculate the delta. if left less than 5%, jump it
+					if (Math.abs(finalValue - initialValue) < Math.abs((parseFloat(prop.end) - parseFloat(prop.start))) * 0.05) {
 						delta = finalValue - initialValue;
 					} else {
 						if (hasPx) {
@@ -143,8 +148,12 @@
 
 				if (stopAnimationCount < properties.length) {
 					requestAnimationFrame(function() {
-						animate(elem, properties);
+						animate(elem, properties, callbackFn);
 					});
+				} else {
+					if (typeof (callbackFn) === 'function') {
+						callbackFn();
+					}
 				}
 			};
 
@@ -153,18 +162,16 @@
 
 			// or one
 			// properties = {property:'left', start:0, end:'300px'}
-			return function(elem, properties) {
-				console.log('properties', properties);
+			return function(elem, properties, callbackFn) {
 				if (!(properties instanceof Array)) properties = [properties];
 
 				// set initial values
 				properties.forEach(function(prop) {
-					console.log('setting initial value of '+prop.property+' with '+prop.start);
 					elem.style[prop.property] = prop.start;
 				});
 
 				requestAnimationFrame(function() {
-					animate(elem, properties);
+					animate(elem, properties, callbackFn);
 				});
 			};
 		})()
@@ -272,62 +279,11 @@
 		animateHeightTo: function(newHeight, elem) {
 			tools.animate(elem, {property: 'height', start: elem.clientHeight + 'px', end: newHeight + 'px'});
 		},
-		_animateHeightTo: (function() {
-
-			var timeoutInterval = 10;
-			var destinationDivide = 3;
-			var finalHeight;
-
-			var animate = function(elem, callbackFn) {
-				var initialHeight = elem.clientHeight;
-				var delta = Math.floor((finalHeight - initialHeight) / destinationDivide);
-				if (delta === 0) {
-					if (typeof(callbackFn) == 'function') callbackFn();
-					return;
-				}
-
-				elem.style.height = (initialHeight + delta) + 'px';
-
-				requestAnimationFrame(function() {
-					animate(elem, callbackFn);
-				});
-			};
-
-			return function(newHeight, elem, callbackFn) {
-				finalHeight = newHeight;
-				requestAnimationFrame(function() {
-					animate(elem, callbackFn);
-				});
-			};
-		})(),
 
 		// function(newHeight, elem)
-		fadeOut: (function() {
-
-			var elemOpacity = 1;
-			var timeoutInterval = 10;
-			var _fadeOut = function(elem, callbackFn) {
-				if (elemOpacity >= 0) {
-					elemOpacity-= 0.2;
-					elem.style.opacity = elemOpacity;
-
-					requestAnimationFrame(function() {
-						_fadeOut(elem, callbackFn);
-					});
-				} else {
-					if (typeof(callbackFn) == 'function') {
-						callbackFn();
-					}
-				}
-			};
-
-			return function(elem, callbackFn) {
-				elemOpacity = 1;
-				requestAnimationFrame(function() {
-					_fadeOut(elem, callbackFn);
-				});
-			};
-		})(),
+		fadeOut: function(elem, callbackFn) {
+			tools.animate(elem, {property: 'opacity', start: 0.9, end: 0}, callbackFn);
+		}, 
 		// load images into an object
 		loadImages: function() {
 			this.images = [];
@@ -358,7 +314,7 @@
 			// big image
 			this._bigImage = tools.createElement('img', {'src':this.images[this._currentImage].fullImageSrc});
 			this._bigImageWrapper = tools.createElement('div', {'class':'bizon-image-wrapper'}, this._bigImage);
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-album-title'}, this.container.getAttribute('title') || 'Gallery'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-album-title', 'title': (this.container.getAttribute('title') || 'Gallery')}, this.container.getAttribute('title') || 'Gallery'));
 			this._bigImageTitle = tools.createElement('div', {'class': 'bizon-image-title'}, 'Image description goes here...');
 			this._bigImageWrapper.appendChild(this._bigImageTitle);
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right', 'title': 'Next image'}, '>'));
@@ -389,54 +345,97 @@
 			this.container.classList.add('bizon-initialized');
 		},
 		// set main image + scroll to thumb's place
-		setActiveImage: function(imgNumber) {
-			if (typeof(imgNumber) == 'undefined') imgNumber = this._currentImage; 
-			this._currentImage = imgNumber;
+		setActiveImage: (function() {
+			var thisObj;
+			var moveTitleLeftTimer = null;
+			var showImageTitle = function(elem, callbackFn) {
+				elem = thisObj._bigImageTitle;
+				tools.animate(elem, {property: 'left', start: elem.style.left, end: 0}, callbackFn);
+			};
+			var hideImageTitle = function(elem, callbackFn) {
+				elem = thisObj._bigImageTitle;
+				tools.animate(elem, {property: 'left', start: 0, end: (-1 * (elem.clientWidth - 20)) + 'px'}, callbackFn);
+			}; 
+			var showAlbumTitle = function(elem, callbackFn) {
+				elem = thisObj.container.querySelector('.bizon-album-title');
+				tools.animate(elem, {property: 'left', start: elem.style.left, end: 0}, callbackFn);
+			};
+			var hideAlbumTitle = function(elem, callbackFn) {
+				elem = thisObj.container.querySelector('.bizon-album-title');
+				tools.animate(elem, {property: 'left', start: 0, end: (-1 * (elem.clientWidth - 20)) + 'px'}, callbackFn);
+			}; 
 
-			// remove `active` 
-			var currentActiveElem = this._smallImagesWrapper.querySelector('.bizon-active');
-			if (currentActiveElem) currentActiveElem.classList.remove('bizon-active');
+			return function(imgNumber) {
+				var that = thisObj = this;
+				if (typeof(imgNumber) == 'undefined') imgNumber = this._currentImage; 
+				this._currentImage = imgNumber;
 
-			// mark relevant small image as active 
-			var theSmallImage = this._smallImagesWrapper.querySelectorAll('div.bizon-small-image-wrapper')[imgNumber];
-			if (theSmallImage) {
-				theSmallImage.classList.add('bizon-active');
-			}
-			
-			this._bigImage.src = this.images[imgNumber].fullImageSrc;
+				// remove `active` 
+				var currentActiveElem = this._smallImagesWrapper.querySelector('.bizon-active');
+				if (currentActiveElem) currentActiveElem.classList.remove('bizon-active');
 
-			// set image title
-			this._bigImageTitle.textContent = this.images[this._currentImage].alt || this.images[this._currentImage].title; 
+				// mark relevant small image as active 
+				var theSmallImage = this._smallImagesWrapper.querySelectorAll('div.bizon-small-image-wrapper')[imgNumber];
+				if (theSmallImage) {
+					theSmallImage.classList.add('bizon-active');
+				}
+				
+				this._bigImage.src = this.images[imgNumber].fullImageSrc;
 
-			// fix small images scroll
-			// if below
-			var smallImageScrollTop = tools.getElementRelativeTop(theSmallImage);
-			if (smallImageScrollTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
-				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
-				this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
-			}
-			// if above
-			if (smallImageScrollTop < this._smallImagesWrapper.scrollTop) {
-				// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
-				this.animateScrollTo(smallImageScrollTop, this._smallImagesWrapper);
-			}
+				// set image title
+				var albumTitle = this.container.querySelector('.bizon-album-title');
+				this._bigImageTitle.style.left = albumTitle.style.left = 0;
+				this._bigImageTitle.textContent = this.images[this._currentImage].alt || this.images[this._currentImage].title; 
+				this._bigImageTitle.setAttribute('title', this._bigImageTitle.textContent);
+				that._bigImageTitle.removeEventListener('mouseover', showImageTitle);
+				that._bigImageTitle.removeEventListener('mouseout', hideImageTitle);
+				albumTitle.removeEventListener('mouseover', showAlbumTitle);
+				albumTitle.removeEventListener('mouseout', hideAlbumTitle);
 
-			// hide arrows
-			if (this._currentImage === 0) {
-				this.container.getElementsByClassName('bizon-arrow-left')[0].style.visibility = 'hidden';
-			} else {
-				this.container.getElementsByClassName('bizon-arrow-left')[0].style.visibility = 'visible';
-			}
 
-			if (this._currentImage >= this.images.length - 1) {
-				this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'hidden';
-			} else {
-				this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'visible';
-			}
+				// hide titlie after a second
+				clearTimeout(moveTitleLeftTimer);
+				moveTitleLeftTimer = setTimeout(function() {
+					hideImageTitle(that._bigImageTitle, function() {
+						that._bigImageTitle.addEventListener('mouseover', showImageTitle);
+						that._bigImageTitle.addEventListener('mouseout', hideImageTitle);
+					});
+					hideAlbumTitle(albumTitle, function() {
+						albumTitle.addEventListener('mouseover', showAlbumTitle);
+						albumTitle.addEventListener('mouseout', hideAlbumTitle);
+					});
+				}, 1000);
 
-			this._bigImage.style.opacity = 1;
-			this.fixSize();
-		},
+				// fix small images scroll
+				// if below
+				var smallImageScrollTop = tools.getElementRelativeTop(theSmallImage);
+				if (smallImageScrollTop + theSmallImage.clientHeight > this._smallImagesWrapper.scrollTop + this.container.clientHeight) {
+					// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
+					this.animateScrollTo(tools.getElementRelativeTop(theSmallImage), this._smallImagesWrapper);
+				}
+				// if above
+				if (smallImageScrollTop < this._smallImagesWrapper.scrollTop) {
+					// this._smallImagesWrapper.scrollTop = theSmallImage.offsetTop;
+					this.animateScrollTo(smallImageScrollTop, this._smallImagesWrapper);
+				}
+
+				// hide arrows
+				if (this._currentImage === 0) {
+					this.container.getElementsByClassName('bizon-arrow-left')[0].style.visibility = 'hidden';
+				} else {
+					this.container.getElementsByClassName('bizon-arrow-left')[0].style.visibility = 'visible';
+				}
+
+				if (this._currentImage >= this.images.length - 1) {
+					this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'hidden';
+				} else {
+					this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'visible';
+				}
+
+				this._bigImage.style.opacity = 1;
+				this.fixSize();
+			};
+		})(),
 		// fix elements sized according to the image/screen
 		fixSize: function() {
 			var that = this;
@@ -482,6 +481,11 @@
 			this._bigImageWrapper.style.width = bigImageWrapperWidth + 'px';
 			this._bigImageWrapper.style.height = containerHeight + 'px';
 
+			// set max width of the titles
+			this.container.querySelector('.bizon-album-title').style.maxWidth = bigImageWrapperWidth + 'px';
+			this._bigImageTitle.style.maxWidth = bigImageWrapperWidth + 'px';
+
+			// set small images wrapper
 			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
 			this._smallImagesWrapper.style.marginLeft = '20px';
