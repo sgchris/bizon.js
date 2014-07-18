@@ -2,9 +2,9 @@
 
 
 .bizon {
-	background: #000;
 	overflow: hidden;
-	
+	box-sizing: border-box;
+	background: #333;
 	/* disable selection */
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -23,89 +23,66 @@
 	cursor: pointer;
 	top: 0;
 }
-.bizon-image-wrapper .bizon-album-title,
-.bizon-image-wrapper .bizon-image-title,
 .bizon-image-wrapper .bizon-arrow-right,
 .bizon-image-wrapper .bizon-arrow-left,
 .bizon-image-wrapper .bizon-close,
 .bizon-image-wrapper .bizon-full-screen 
 {
 	position: absolute;
-	padding: 10px;
-	background: #C11;
+	background-color: #000;
 	opacity: 0.3;
-	color: #FFF;
-	font-size: 30px;
-	font-weight: bold;
 	cursor: pointer;
-	line-height: 100px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-.bizon-image-wrapper .bizon-album-title {
-	opacity: 0.5;
-	top: 10px;
-	font-size: 24px;
-	height: 30px;
-	line-height: 30px;
-	left: 0;
-	padding: 0 30px 0 10px;
-	margin:0;
-	border-radius: 0 5px 5px 0;
-}
-.bizon-image-wrapper .bizon-image-title {
-	opacity: 0.5;
-	top: 50px;
-	font-size: 18px;
-	height: 20px;
-	line-height: 20px;
-	left: 0;
-	padding: 0 30px 0 10px;
-	margin:0;
-	border-radius: 0 5px 5px 0;
 }
 .bizon-image-wrapper .bizon-arrow-right {
 	top: 40%;
 	right: 0;
+	width: 36px;
+	height: 36px;
+	background: url("images/icons/32/arrow-right.png") 2px 2px no-repeat;
 }
 .bizon-image-wrapper .bizon-arrow-left {
 	top: 40%;
 	left: 0px;
+	width: 36px;
+	height: 36px;
+	background: url("images/icons/32/arrow-left.png") 2px 2px no-repeat;
 }
 .bizon-image-wrapper .bizon-close {
 	right: 0;
 	top: 10px;
-	height: 30px;
-	width: 30px;
-	text-align:center;
-	font-size: 26px;
-	font-weight: bold;
-	line-height: 30px;
-	padding:0;
+	width: 36px;
+	height: 36px;
+	background: url("images/icons/32/close.png") 2px 2px no-repeat;
 }
 .bizon-image-wrapper .bizon-full-screen {
 	right: 40px;
 	top: 10px;
-	height: 30px;
-	width: 30px;
-	text-align:center;
-	font-size: 26px;
-	font-weight: bold;
-	line-height: 30px;
-	padding:0;
+	width: 36px;
+	height: 36px;
+	background: url("images/icons/32/view.png") 2px 2px no-repeat;
 }
+.bizon-image-wrapper .bizon-album-title,
+.bizon-image-wrapper .bizon-image-title {
+	display: none;
+}
+
+
+
 .bizon-image-wrapper .bizon-album-title:hover,
 .bizon-image-wrapper .bizon-image-title:hover,
 .bizon-image-wrapper .bizon-arrow-right:hover,
 .bizon-image-wrapper .bizon-arrow-left:hover,
 .bizon-image-wrapper .bizon-full-screen:hover,
 .bizon-image-wrapper .bizon-close:hover {
-	opacity: 0.8;
+	opacity: 1;
 }
 
 .bizon-small-images-wrapper {
 	float: right;
+	border-left: 1px solid #AAA;
+	padding-left: 5px;
+	background: #EEE;
+	box-sizing: border-box;
 	overflow-x: hidden;
 	overflow-y: auto;
 }

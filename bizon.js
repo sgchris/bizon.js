@@ -317,10 +317,10 @@
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-album-title', 'title': (this.container.getAttribute('title') || 'Gallery')}, this.container.getAttribute('title') || 'Gallery'));
 			this._bigImageTitle = tools.createElement('div', {'class': 'bizon-image-title'}, 'Image description goes here...');
 			this._bigImageWrapper.appendChild(this._bigImageTitle);
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right', 'title': 'Next image'}, '>'));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-left', 'title': 'Previous image'}, '<'));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-full-screen', 'title': 'Full screen'}, '#'));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close', 'title': 'Close'}, 'x'));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right', 'title': 'Next image'}));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-left', 'title': 'Previous image'}));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-full-screen', 'title': 'Full screen'}));
+			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close', 'title': 'Close'}));
 
 			// small images
 			this._smallImagesWrapper = tools.createElement('div', {'class':'bizon-small-images-wrapper'});
@@ -486,9 +486,9 @@
 			this._bigImageTitle.style.maxWidth = bigImageWrapperWidth + 'px';
 
 			// set small images wrapper
-			this._smallImagesWrapper.style.width =  smallImagesWrapper+ 'px';
+			this._smallImagesWrapper.style.width = 10 + smallImagesWrapper+ 'px';
 			this._smallImagesWrapper.style.height = containerHeight + 'px';
-			this._smallImagesWrapper.style.marginLeft = '20px';
+			this._smallImagesWrapper.style.marginLeft = '10px';
 			if (this._fullScreenMode) {
 				this._smallImagesWrapper.style.display = 'none';
 			} else {
