@@ -4,7 +4,9 @@
 .bizon {
 	overflow: hidden;
 	box-sizing: border-box;
-	background: #333;
+	background: #2E221F;
+	xbackground: #333;
+
 	/* disable selection */
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -81,7 +83,8 @@
 	float: right;
 	border-left: 1px solid #AAA;
 	padding-left: 5px;
-	background: #EEE;
+	background: #F7EDBF;
+	xbackground: #EEE;
 	box-sizing: border-box;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -95,5 +98,5 @@
 }
 	
 .bizon-small-image-wrapper.bizon-active {
-	background: #C11;
+	background: #58351A ;
 }
