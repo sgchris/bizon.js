@@ -283,6 +283,10 @@
 					alt: img.getAttribute('alt'),
 					ratio: imgWidth / imgHeight
 				});
+
+				// preload the images
+				var preloadImg = document.createElement('img');
+				preloadImg.src = img.getAttribute('full-image-src') || img.getAttribute('src');
 			});
 		},
 		// create initial DOM for the gallery
