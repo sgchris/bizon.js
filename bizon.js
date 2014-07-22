@@ -11,6 +11,10 @@
 
 /**
  * @TODO
+ *
+ * FIX ONRESIZE!!!
+ *
+ * 
  * - the slide titles looks bad - make it on a transparent tapet at the bottom
  * - apply touch events (look for ready solutions)
  * - add callbacks
@@ -436,19 +440,16 @@
 				containerHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 				bigImageWrapperWidth = containerWidth - 20
 				
-				this.container.style.position = 'absolute';
-				this.container.style.left = 0;
-				this.container.style.top = 0;
+				this.container.classList.add('bizon-full-screen-container');
 				this.container.style.width = containerWidth + 'px';
 				this.container.style.height = containerHeight + 'px';
-				
 			} else {
 				// set width and height as the size of the container
 				containerWidth = this._initialContainerWidth; // this.container.clientWidth;
 				containerHeight = this._initialContainerHeight;
 				bigImageWrapperWidth = Math.floor(containerWidth * 0.95) - 20
 
-				this.container.style.position = 'relative';
+				this.container.classList.remove('bizon-full-screen-container');
 				this.container.style.width = containerWidth + 'px';
 				this.container.style.height = containerHeight + 'px';
 			}

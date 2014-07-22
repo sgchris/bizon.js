@@ -15,6 +15,13 @@
 	-ms-user-select: none;
 	user-select: none;
 }
+.bizon-full-screen-container {
+	position: fixed !important;
+	left: 0 !important;
+	right: 0 !important;
+	top: 0 !important;
+	bottom: 0 !important;
+}
 .bizon-image-wrapper {
 	float: left;
 	position: relative;
