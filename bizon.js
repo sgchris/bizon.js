@@ -11,10 +11,6 @@
 
 /**
  * @TODO
- *
- * FIX ONRESIZE!!!
- *
- * 
  * - the slide titles looks bad - make it on a transparent tapet at the bottom
  * - apply touch events (look for ready solutions)
  * - add callbacks
@@ -435,6 +431,7 @@
 				bigImageWrapperWidth;
 			
 			if (this._fullScreenMode) {
+
 				// set width and height as the size of the window
 				containerWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 				containerHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -571,6 +568,24 @@
 			// click "fullscreen"
 			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
 				that._fullScreenMode = !that._fullScreenMode;
+				/*
+				 * TODO: check this later
+				if (that._fullScreenMode) {
+					if (!window.requestedFullScreen) {
+						console.log('request full screen');
+						if (that.container.requestFullscreen) {
+							that.container.requestFullscreen();
+						} else if (that.container.webkitRequestFullscreen) {
+							that.container.webkitRequestFullscreen();
+						} else if (that.container.mozRequestFullscreen) {
+							that.container.mozRequestFullscreen();
+						} else if (that.container.msRequestFullscreen) {
+							that.container.msRequestFullscreen();
+						}
+						window.requestedFullScreen = true;
+					}
+				}
+				 */
 				that.setActiveImage();
 			});
 			
