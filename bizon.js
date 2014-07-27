@@ -568,24 +568,20 @@
 			// click "fullscreen"
 			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
 				that._fullScreenMode = !that._fullScreenMode;
-				/*
-				 * TODO: check this later
-				if (that._fullScreenMode) {
-					if (!window.requestedFullScreen) {
-						console.log('request full screen');
-						if (that.container.requestFullscreen) {
-							that.container.requestFullscreen();
-						} else if (that.container.webkitRequestFullscreen) {
-							that.container.webkitRequestFullscreen();
-						} else if (that.container.mozRequestFullscreen) {
-							that.container.mozRequestFullscreen();
-						} else if (that.container.msRequestFullscreen) {
-							that.container.msRequestFullscreen();
-						}
-						window.requestedFullScreen = true;
+
+				if (!window.requestedFullScreen) {
+					console.log('request full screen');
+					if (document.documentElement.requestFullscreen) {
+						document.documentElement.requestFullscreen();
+					} else if (document.documentElement.webkitRequestFullscreen) {
+						document.documentElement.webkitRequestFullscreen();
+					} else if (document.documentElement.mozRequestFullscreen) {
+						document.documentElement.mozRequestFullscreen();
+					} else if (document.documentElement.msRequestFullscreen) {
+						document.documentElement.msRequestFullscreen();
 					}
 				}
-				 */
+
 				that.setActiveImage();
 			});
 			
