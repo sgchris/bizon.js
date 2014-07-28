@@ -540,6 +540,41 @@
 			
 			this._trigger('close');
 		},
+		enterFullScreenMode: function() {
+			if (!document.fullscreenElement &&
+					!document.mozFullScreenElement && 
+					!document.webkitFullscreenElement && 
+					!document.msFullscreenElement 
+			   ) {  // current working methods
+				   if (document.documentElement.requestFullscreen) {
+					   document.documentElement.requestFullscreen();
+				   } else if (document.documentElement.msRequestFullscreen) {
+					   document.documentElement.msRequestFullscreen();
+				   } else if (document.documentElement.mozRequestFullScreen) {
+					   document.documentElement.mozRequestFullScreen();
+				   } else if (document.documentElement.webkitRequestFullscreen) {
+					   document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+				   }
+			   }
+		},
+		exitFullScreenMode: function() {
+			if (document.fullscreenElement ||
+				document.mozFullScreenElement || 
+				document.webkitFullscreenElement || 
+				document.msFullscreenElement
+			   ) {  // current working methods
+				   // close full screen mode (if was before)
+				   if (document.exitFullscreen) {
+					   document.exitFullscreen();
+				   } else if (document.msExitFullscreen) {
+					   document.msExitFullscreen();
+				   } else if (document.mozCancelFullScreen) {
+					   document.mozCancelFullScreen();
+				   } else if (document.webkitExitFullscreen) {
+					   document.webkitExitFullscreen();
+				   }
+			   }
+		},
 		// bind gallery events
 		bindEvents: function() {
 			var that = this;
@@ -568,20 +603,11 @@
 			// click "fullscreen"
 			that.container.querySelector('.bizon-full-screen').addEventListener('click', function() {
 				that._fullScreenMode = !that._fullScreenMode;
-
-				if (!window.requestedFullScreen) {
-					console.log('request full screen');
-					if (document.documentElement.requestFullscreen) {
-						document.documentElement.requestFullscreen();
-					} else if (document.documentElement.webkitRequestFullscreen) {
-						document.documentElement.webkitRequestFullscreen();
-					} else if (document.documentElement.mozRequestFullscreen) {
-						document.documentElement.mozRequestFullscreen();
-					} else if (document.documentElement.msRequestFullscreen) {
-						document.documentElement.msRequestFullscreen();
-					}
+				if (that._fullScreenMode) {
+					that.enterFullScreenMode();
+				} else {
+					that.exitFullScreenMode();
 				}
-
 				that.setActiveImage();
 			});
 			
@@ -604,6 +630,7 @@
 
 				if (evt.keyCode == 27) {
 					that._fullScreenMode = false;
+					that.exitFullScreenMode();
 					that.setActiveImage();
 				}
 				
