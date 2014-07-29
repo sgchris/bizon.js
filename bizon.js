@@ -435,7 +435,9 @@
 				// set width and height as the size of the window
 				containerWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 				containerHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-				bigImageWrapperWidth = containerWidth - 20
+
+				bigImageWrapperWidth = containerWidth;
+				if (containerWidth > 800) bigImageWrapperWidth-= 20;
 				
 				this.container.classList.add('bizon-full-screen-container');
 				this.container.style.width = containerWidth + 'px';
@@ -453,7 +455,7 @@
 			
 			// fix small/big images wrapper
 			var smallImagesWrapper = Math.floor(containerWidth * 0.05);
-			if (smallImagesWrapper < this._smallImagesWrapperMinWidth) {
+			if (!this._fullScreenMode && smallImagesWrapper < this._smallImagesWrapperMinWidth) {
 				var deltaTillMinimum = this._smallImagesWrapperMinWidth - smallImagesWrapper;
 				smallImagesWrapper = this._smallImagesWrapperMinWidth;
 				bigImageWrapperWidth-= deltaTillMinimum;
