@@ -5,7 +5,6 @@
 	overflow: hidden;
 	box-sizing: border-box;
 	background: #2E221F;
-	xbackground: #333;
 
 	/* disable selection */
 	-webkit-touch-callout: none;
@@ -91,7 +90,6 @@
 	border-left: 1px solid #AAA;
 	padding-left: 5px;
 	background: #F7EDBF;
-	xbackground: #EEE;
 	box-sizing: border-box;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -107,3 +105,19 @@
 .bizon-small-image-wrapper.bizon-active {
 	background: #58351A ;
 }
+
+
+
+
+/* ******* b/w theme ******** */
+.bizon {
+	background: #111;
+
+}
+.bizon-small-images-wrapper {
+	background: #EEE;
+}
+.bizon-small-image-wrapper.bizon-active {
+	background: #C11;
+}
+
