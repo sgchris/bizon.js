@@ -166,10 +166,11 @@
 		// set default options
 		var defaultOptions = {
 			'fullScreen': false,
+			'showFullScreenIcon': true,
 			'smallImagesWrapperMinWidth': 80,
 			'smallImagesPadding': 3
 		};
-		options = tools.merge_objects(defaultOptions, options);
+		this.options = options = tools.merge_objects(defaultOptions, options);
 
 		// space between each small image and its wrapper
 		this._smallImagesPadding = options['smallImagesPadding'];
@@ -305,7 +306,9 @@
 			this._bigImageWrapper.appendChild(this._bigImageTitle);
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-right', 'title': 'Next image'}));
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-arrow-left', 'title': 'Previous image'}));
-			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-full-screen', 'title': 'Full screen'}));
+			var fullScreenIcon = tools.createElement('div', {'class': 'bizon-full-screen', 'title': 'Full screen'});
+			if (!this.options.showFullScreenIcon) { fullScreenIcon.style.display = 'none'; }
+			this._bigImageWrapper.appendChild(fullScreenIcon);
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close', 'title': 'Close'}));
 
 			// small images
