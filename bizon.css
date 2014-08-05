@@ -115,7 +115,8 @@
 
 }
 .bizon-small-images-wrapper {
-	background: #EEE;
+	background: #111;
+	border: none;
 }
 .bizon-small-image-wrapper.bizon-active {
 	background: #C11;
