@@ -168,7 +168,9 @@
 			'fullScreen': false,
 			'showFullScreenIcon': true,
 			'smallImagesWrapperMinWidth': 80,
-			'smallImagesPadding': 3
+			'smallImagesPadding': 3,
+			'showFacebookLike': true
+			
 		};
 		this.options = options = tools.merge_objects(defaultOptions, options);
 
@@ -311,6 +313,23 @@
 			this._bigImageWrapper.appendChild(fullScreenIcon);
 			this._bigImageWrapper.appendChild(tools.createElement('div', {'class': 'bizon-close', 'title': 'Close'}));
 
+			if (this.options.showFacebookLike) {
+				var fbIframeWrapper = tools.createElement('div', {
+					"class": "bizon-fb-like-wrapper"
+				});
+				fbIframeWrapper.appendChild(tools.createElement('div', {
+					"class": "fb-like",
+					"style": "height: 20px; overflow: hidden;",
+					"data-href": window.location.href,
+					"data-width": "100",
+					"data-layout": "button",
+					"data-action": "like",
+					"data-show-faces": "false",
+					"data-share": "false"
+				}));
+				this._bigImageWrapper.appendChild(fbIframeWrapper);
+			}
+
 			// small images
 			this._smallImagesWrapper = tools.createElement('div', {'class':'bizon-small-images-wrapper'});
 			for (var i=0, totalImages=this.images.length; i<totalImages; i++) {
@@ -332,6 +351,14 @@
 			this.setActiveImage();
 
 			this.container.classList.add('bizon-initialized');
+
+			// activate facebook like button
+			if (this.options.showFullScreenIcon) {
+				if (window.FB && FB.XFBML && FB.XFBML.parse) {
+					FB.XFBML.parse();
+				}
+			}
+
 		},
 		// set main image + scroll to thumb's place
 		setActiveImage: (function() {
