@@ -355,7 +355,9 @@
 			// activate facebook like button
 			if (this.options.showFullScreenIcon) {
 				if (window.FB && FB.XFBML && FB.XFBML.parse) {
-					FB.XFBML.parse();
+					try {
+						FB.XFBML.parse();
+					} catch(e) {};
 				}
 			}
 
