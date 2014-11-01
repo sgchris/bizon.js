@@ -576,6 +576,9 @@
 				that.container.parentNode.removeChild(that.container);
 			});
 			
+			// if was in a full screen mode, close it
+			this.exitFullScreenMode();
+
 			this._trigger('close');
 		},
 		enterFullScreenMode: function() {
