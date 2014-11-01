@@ -398,7 +398,10 @@
 					theSmallImage.classList.add('bizon-active');
 				}
 				
-				this._bigImage.src = this.images[imgNumber].fullImageSrc;
+				var bigImageParent = this._bigImage.parentNode;
+				bigImageParent.removeChild(this._bigImage);
+				this._bigImage = tools.createElement('img', {'src':this.images[imgNumber].fullImageSrc});
+				bigImageParent.appendChild(this._bigImage);
 
 				// set image title
 				var albumTitle = this.container.querySelector('.bizon-album-title');
@@ -409,7 +412,6 @@
 				that._bigImageTitle.removeEventListener('mouseout', hideImageTitle);
 				albumTitle.removeEventListener('mouseover', showAlbumTitle);
 				albumTitle.removeEventListener('mouseout', hideAlbumTitle);
-
 
 				// hide titlie after a second
 				clearTimeout(moveTitleLeftTimer);
@@ -681,8 +683,11 @@
 			});
 			
 			// click on main image 
-			that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
-				that.nextImage();
+			//that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
+			that.container.querySelector('.bizon-image-wrapper').addEventListener('click', function(evt) {
+				if (event.target.tagName == 'IMG') {
+					that.nextImage();
+				}
 			});
 
 			// click on "close"
