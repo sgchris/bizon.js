@@ -683,9 +683,8 @@
 			});
 			
 			// click on main image 
-			//that.container.querySelector('.bizon-image-wrapper img').addEventListener('click', function() {
 			that.container.querySelector('.bizon-image-wrapper').addEventListener('click', function(evt) {
-				if (event.target.tagName == 'IMG') {
+				if (evt.target.tagName == 'IMG') {
 					that.nextImage();
 				}
 			});
