@@ -556,9 +556,11 @@
 			if (this._currentImage + 1 < this.images.length) {
 				this._currentImage++;
 				var that = this;
-				this.fadeOut(this._bigImage, function() {
-					that.setActiveImage();
-				});
+				this._bigImage.style.opacity = 0;
+				that.setActiveImage();
+				//this.fadeOut(this._bigImage, function() {
+				//
+				//});
 			}
 		},
 		// go to the previous image (if there is)
@@ -566,9 +568,11 @@
 			if (this._currentImage > 0) {
 				this._currentImage--;
 				var that = this;
-				this.fadeOut(this._bigImage, function() {
-					that.setActiveImage();
-				});
+				this._bigImage.style.opacity = 0;
+				that.setActiveImage();
+				//this.fadeOut(this._bigImage, function() {
+				//
+				//});
 			} 
 		},
 		// close (slide-up) the gallery (DOM is not removed, it becomes height 0)
