@@ -5,7 +5,7 @@
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+// requestAnimationFrame polyfill by Erik Moeller. fixes from Paul Irish and Tino Zijdel
 // MIT license
 ;(function(){for(var e=0,b=["ms","moz","webkit","o"],a=0;a<b.length&&!window.requestAnimationFrame;++a)window.requestAnimationFrame=window[b[a]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[b[a]+"CancelAnimationFrame"]||window[b[a]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(a,b){var c=(new Date).getTime(),d=Math.max(0,16-(c-e)),f=window.setTimeout(function(){a(c+d)},d);e=c+d;return f});window.cancelAnimationFrame||(window.cancelAnimationFrame=function(a){clearTimeout(a)})})();
 
@@ -169,7 +169,8 @@
 			'showFullScreenIcon': true,
 			'smallImagesWrapperMinWidth': 80,
 			'smallImagesPadding': 3,
-			'showFacebookLike': true
+			'showFacebookLike': true,
+			'pinItButton': true
 			
 		};
 		this.options = options = tools.merge_objects(defaultOptions, options);
@@ -328,6 +329,30 @@
 					"data-share": "false"
 				}));
 				this._bigImageWrapper.appendChild(fbIframeWrapper);
+			}
+			
+			if (this.options.pinItButton) {
+				// add pinterest script asyncly
+				var script = tools.createElement('script', {
+					'src': '//assets.pinterest.com/js/pinit.js'
+				});
+				document.getElementsByTagName('head')[0].appendChild(script);
+				
+				// create the button
+				var pinItButtonWrapper = tools.createElement('div', {
+					'class': 'bizon-pin-it-button-wrapper'
+				});
+				var pinItButton = tools.createElement('a', {
+					'href': '//www.pinterest.com/pin/create/button/',
+					'data-pin-do': 'buttonBookmark',
+					'data-pin-color': 'red'
+				});
+				var pinItImage = tools.createElement('img', {
+					'src': '//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png'
+				});
+				pinItButton.appendChild(pinItImage);
+				pinItButtonWrapper.appendChild(pinItButton);
+				this._bigImageWrapper.appendChild(pinItButtonWrapper);
 			}
 
 			// small images

@@ -34,13 +34,20 @@
 .bizon-image-wrapper .bizon-arrow-left,
 .bizon-image-wrapper .bizon-close,
 .bizon-image-wrapper .bizon-full-screen,
-.bizon-image-wrapper .bizon-fb-like-wrapper
+.bizon-image-wrapper .bizon-fb-like-wrapper,
+.bizon-image-wrapper .bizon-pin-it-button-wrapper
 {
 	position: absolute;
 	background-color: #000;
 	opacity: 0.8;
 	cursor: pointer;
 	z-index: 10;
+}
+.bizon-image-wrapper .bizon-pin-it-button-wrapper {
+	bottom: 10px;
+	right: 60px;
+	width: 40px;
+	height: 20px;
 }
 .bizon-image-wrapper .bizon-fb-like-wrapper {
 	bottom: 10px;
