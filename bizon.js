@@ -295,6 +295,8 @@
 		},
 		// create initial DOM for the gallery
 		buildDom: function() {
+			var that = this;
+			
 			//if (this.container.classList.contains('bizon-initialized')) return;
 			tools.empty(this.container);
 			if (!this.container.classList.contains('bizon')) {
@@ -334,24 +336,16 @@
 			if (this.options.pinItButton) {
 				// add pinterest script asyncly
 				var script = tools.createElement('script', {
-					'src': '//assets.pinterest.com/js/pinit.js'
+					'src': '//assets.pinterest.com/js/pinit.js',
+					'data-pin-build': 'build_pinterest_button'
 				});
 				document.getElementsByTagName('head')[0].appendChild(script);
 				
 				// create the button
 				var pinItButtonWrapper = tools.createElement('div', {
+					'id': 'bizon-pin-it-button-wrapper',
 					'class': 'bizon-pin-it-button-wrapper'
 				});
-				var pinItButton = tools.createElement('a', {
-					'href': '//www.pinterest.com/pin/create/button/',
-					'data-pin-do': 'buttonBookmark',
-					'data-pin-color': 'red'
-				});
-				var pinItImage = tools.createElement('img', {
-					'src': '//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png'
-				});
-				pinItButton.appendChild(pinItImage);
-				pinItButtonWrapper.appendChild(pinItButton);
 				this._bigImageWrapper.appendChild(pinItButtonWrapper);
 			}
 
@@ -476,7 +470,39 @@
 				} else {
 					this.container.getElementsByClassName('bizon-arrow-right')[0].style.visibility = 'visible';
 				}
-
+				
+				// fix "pin it" url button
+				
+				if (this.options.pinItButton) {
+					// get & clear pin-it button wrapper
+					var pinItButtonWrapper = document.getElementById('bizon-pin-it-button-wrapper');
+					pinItButtonWrapper.innerHTML = '';
+					
+					// create the button
+					var pinItButton = tools.createElement('a', {
+						'href': '//www.pinterest.com/pin/create/button/' + 
+							'?url=' + encodeURIComponent(document.location.href) + 
+							'&media=' + encodeURIComponent(that._bigImage.getAttribute('src')),
+						'data-pin-do': 'buttonPin',
+						'data-pin-color':'red'
+					});
+					var pinItImage = tools.createElement('img', {
+						'src': '//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png'
+					});
+					pinItButton.appendChild(pinItImage);
+					pinItButtonWrapper.appendChild(pinItButton);
+					
+					(function buildPinterestButton() {
+						if (window.build_pinterest_button) {
+							build_pinterest_button(pinItButtonWrapper);
+						} else {
+							setTimeout(function() {
+								buildPinterestButton();
+							}, 200);
+						}
+					})();
+				}
+				
 				this._bigImage.style.opacity = 1;
 				this.fixSize();
 			};
