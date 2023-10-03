@@ -14,46 +14,29 @@
 		// the slider element
 		#bizonEl = null;
 
-		// slider styles
-		#bizonCss = `
-		#bizon-slider {
-			
-		}
-		`.replace(/([\,\{\};]+)\s+/g, "$1"); // remove whitesoaces
-
 		#bizonHtml = `
 		<div id="bizon-slider">
-			<div id="bizon-main"></div>
-			<div id="slider-thumbnails"></div>
+			<div id="bizon-main-image"></div>
+			<div id="bizon-thumbnails"></div>
 		</div>`.replace(/\s+</g, '<'); // remove whitespaces
 
 		constructor(options) {
 			// build the object options
 			this.#options = {...this.#defaultOptions, ...options};
-
-			// add bizon styles
-			this.#addStyleSection();
 		}
 
 		// show the slider
 		show() {
-			this.#initBizonEl();
+			if (this.#options.images.length === 0) {
+				console.error("Bizon: images are not provided");
+				return;
+			}
 
+			this.#initBizonEl();
+			this.#initMainImage();
 			this.#initThumbnails();
 		}
 
-
-		// add style section to the <head> element
-		#addStyleSection() {
-			// check that the CSS appears on the page
-			if (!document.getElementById('bizon-style')) {
-				const bizonStyle = document.createElement('style');
-				bizonStyle.id = "bizon-style";
-				bizonStyle.innerText = this.#bizonCss;
-
-				document.head.appendChild(bizonStyle);
-			}
-		}
 
 		// get/create the bizon element
 		#initBizonEl() {
@@ -70,7 +53,6 @@
 			this.#bizonEl.parentNode.removeChild(this.#bizonEl);
 			bizonWrapper.remove();
 
-			console.log('bizonEl', this.#bizonEl);
 			document.body.appendChild(this.#bizonEl);
 		}
 
@@ -78,12 +60,15 @@
 		#initMainImage() {
 			const mainImage = this.#options.images[0];
 			let mainImageWrapper = document.createElement('div');
-			mainImageWrapper.classList.add('bizon-main-image-wrapper');
+			mainImageWrapper.id = 'bizon-main-image-wrapper';
 
 			let mainImageEl = document.createElement('img');
 			mainImageEl.src = mainImage.src; // set the first image by default
-			imgEl.setAttribute('alt', mainImage.caption);
-			imgEl.setAttribute('title', mainImage.caption);
+			mainImageEl.setAttribute('alt', mainImage.caption);
+			mainImageEl.setAttribute('title', mainImage.caption);
+
+			mainImageWrapper.appendChild(mainImageEl);
+			this.#bizonEl.querySelector('#bizon-main-image').appendChild(mainImageWrapper);
 		}
 
 		// fill the thumbnails section
@@ -99,8 +84,7 @@
 				wrapperEl.classList.add('bizon-thumb-wrapper');
 				wrapperEl.appendChild(imgEl);
 
-				console.log('el2', that.#bizonEl);
-				that.#bizonEl.querySelector('#slider-thumbnails').appendChild(wrapperEl);
+				that.#bizonEl.querySelector('#bizon-thumbnails').appendChild(wrapperEl);
 			});
 		}
 	}
