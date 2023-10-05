@@ -1,7 +1,6 @@
 ;(function() {
 
 	class Bizon {
-
 		// the default options. Can be overridden by the provided "params" to the constructor
 		#defaultOptions = {
 			title: null,
@@ -13,9 +12,12 @@
 
 		// the slider element
 		#bizonEl = null;
+		#mainImageEl = null;
 		#rightButtonEl = null;
 		#leftButtonEl = null;
 		#closeButtonEl = null;
+
+		#currentImageIndex = 0;
 
 		#bizonHtml = `
 		<div id="bizon-slider">
@@ -68,17 +70,29 @@
 
 		// fill the main image
 		#initMainImage() {
-			const mainImage = this.#options.images[0];
 			let mainImageWrapper = document.createElement('div');
 			mainImageWrapper.id = 'bizon-main-image-wrapper';
 
-			let mainImageEl = document.createElement('img');
-			mainImageEl.src = mainImage.src; // set the first image by default
-			mainImageEl.setAttribute('alt', mainImage.caption);
-			mainImageEl.setAttribute('title', mainImage.caption);
+			this.#mainImageEl = document.createElement('img');
 
-			mainImageWrapper.appendChild(mainImageEl);
+			mainImageWrapper.appendChild(this.#mainImageEl);
 			this.#bizonEl.querySelector('#bizon-main-image').appendChild(mainImageWrapper);
+
+			this.#setMainImage(this.#currentImageIndex);
+		}
+
+		// set mmain image
+		#setMainImage(idx) {
+			// check if in range
+			idx = idx >= this.#options.images.length ? this.#options.images.length - 1 : idx;
+			idx = idx < 0 ? 0 : idx;
+
+			this.#currentImageIndex = idx;
+			const currentImageObj = this.#options.images[this.#currentImageIndex];
+
+			this.#mainImageEl.src = currentImageObj.src; // set the first image by default
+			this.#mainImageEl.setAttribute('alt', currentImageObj.caption);
+			this.#mainImageEl.setAttribute('title', currentImageObj.caption);
 		}
 
 		// fill the thumbnails section
@@ -114,24 +128,26 @@
 			moveRightSection.classList.add('bizon-move-section-right');
 
 			// the arrows
-			const this.#leftButtonEl = document.createElement('div');
+			this.#leftButtonEl = document.createElement('div');
 			this.#leftButtonEl.classList.add('bizon-move-arrow');
 			this.#leftButtonEl.classList.add('bizon-move-arrow-left');
 			this.#leftButtonEl.title = "Previous";
-			const this.#rightButtonEl = document.createElement('div');
+			this.#rightButtonEl = document.createElement('div');
 			this.#rightButtonEl.classList.add('bizon-move-arrow');
 			this.#rightButtonEl.classList.add('bizon-move-arrow-right');
 			this.#rightButtonEl.title = "Next";
 
 			// the close button
-			const this.#closeButtonEl = document.createElement('div');
+			this.#closeButtonEl = document.createElement('div');
 			this.#closeButtonEl.classList.add('bizon-close-button');
 			this.#closeButtonEl.title = "Close";
 
+			// add the elements to the panels
 			moveLeftSection.appendChild(moveLeftArrow);
 			moveRightSection.appendChild(moveRightArrow);
 			moveRightSection.appendChild(closeButton);
 
+			// add sections to the main image section
 			mainImageSection.appendChild(moveLeftSection);
 			mainImageSection.appendChild(moveRightSection);
 		}
