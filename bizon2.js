@@ -74,7 +74,7 @@
 		// fill the thumbnails section
 		#initThumbnails() {
 			const that = this;
-			this.#options.images.forEach(img => {
+			this.#options.images.forEach((img, idx) => {
 				let imgEl = document.createElement('img');
 				imgEl.src = img.thumb || img.src;
 				imgEl.setAttribute('alt', img.caption);
@@ -82,6 +82,9 @@
 
 				let wrapperEl = document.createElement('div');
 				wrapperEl.classList.add('bizon-thumb-wrapper');
+				if (idx == 0) {
+					wrapperEl.classList.add('bizon-thumb-wrapper-active');
+				}
 				wrapperEl.appendChild(imgEl);
 
 				that.#bizonEl.querySelector('#bizon-thumbnails').appendChild(wrapperEl);
