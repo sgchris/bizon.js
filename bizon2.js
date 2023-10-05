@@ -42,6 +42,8 @@
 			this.#initThumbnails();
 			this.#initControls();
 
+			this.#setMainImage(this.#currentImageIndex);
+
 			this.#bindEvents();
 		}
 
@@ -77,22 +79,6 @@
 
 			mainImageWrapper.appendChild(this.#mainImageEl);
 			this.#bizonEl.querySelector('#bizon-main-image').appendChild(mainImageWrapper);
-
-			this.#setMainImage(this.#currentImageIndex);
-		}
-
-		// set mmain image
-		#setMainImage(idx) {
-			// check if in range
-			idx = idx >= this.#options.images.length ? this.#options.images.length - 1 : idx;
-			idx = idx < 0 ? 0 : idx;
-
-			this.#currentImageIndex = idx;
-			const currentImageObj = this.#options.images[this.#currentImageIndex];
-
-			this.#mainImageEl.src = currentImageObj.src; // set the first image by default
-			this.#mainImageEl.setAttribute('alt', currentImageObj.caption);
-			this.#mainImageEl.setAttribute('title', currentImageObj.caption);
 		}
 
 		// fill the thumbnails section
@@ -113,6 +99,34 @@
 
 				that.#bizonEl.querySelector('#bizon-thumbnails').appendChild(wrapperEl);
 			});
+		}
+
+		// set mmain image
+		#setMainImage(idx) {
+			// check if in range
+			idx = idx >= this.#options.images.length ? this.#options.images.length - 1 : idx;
+			idx = idx < 0 ? 0 : idx;
+
+			this.#currentImageIndex = idx;
+			const currentImageObj = this.#options.images[this.#currentImageIndex];
+
+			this.#mainImageEl.src = currentImageObj.src; // set the first image by default
+			this.#mainImageEl.setAttribute('alt', currentImageObj.caption);
+			this.#mainImageEl.setAttribute('title', currentImageObj.caption);
+
+			this.#setActiveThumbnail();
+		}
+
+		#setActiveThumbnail() {
+			const idx = this.#currentImageIndex;
+
+			// remove current active thumb
+			[].forEach.call(this.#bizonEl.querySelectorAll('.bizon-thumb-wrapper-active'), el => {
+				el.classList.remove('bizon-thumb-wrapper-active');
+			});
+
+			const thumbs = this.#bizonEl.querySelector('#bizon-thumbnails').childNodes;
+			thumbs[idx].classList.add('bizon-thumb-wrapper-active');
 		}
 
 		// init the "right", "left" and "close" buttons
@@ -143,16 +157,30 @@
 			this.#closeButtonEl.title = "Close";
 
 			// add the elements to the panels
-			moveLeftSection.appendChild(moveLeftArrow);
-			moveRightSection.appendChild(moveRightArrow);
-			moveRightSection.appendChild(closeButton);
+			moveLeftSection.appendChild(this.#leftButtonEl);
+			moveRightSection.appendChild(this.#rightButtonEl);
+			moveRightSection.appendChild(this.#closeButtonEl);
 
 			// add sections to the main image section
 			mainImageSection.appendChild(moveLeftSection);
 			mainImageSection.appendChild(moveRightSection);
 		}
 
+		goNext() {
+			this.#setMainImage(this.#currentImageIndex + 1);
+		}
+
+		goPrevious() {
+			this.#setMainImage(this.#currentImageIndex - 1);
+		}
+
 		#bindEvents() {
+			this.#rightButtonEl.parentNode.onclick = () => {
+				this.goNext();
+			};
+			this.#leftButtonEl.parentNode.onclick = () => {
+				this.goPrevious();
+			};
 		}
 
 		#unbindEvents() {
