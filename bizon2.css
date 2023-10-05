@@ -4,12 +4,14 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 999;
+	z-index: 998;
 	background: rgba(0,0,0,0.8);
 }
 #bizon-main-image {
-	height: 90%;
+	height: 92%;
 	text-align: center;
+	position: relative;
+	overflow: hidden;
 }
 #bizon-main-image-wrapper {
 	height: calc(100% - 20px);
@@ -23,7 +25,7 @@
 }
 
 #bizon-thumbnails {
-	height: 10%;
+	height: 8%;
 	display: flex;
 	justify-content: center;
 	background: rgba(255,255,255,0.1);
@@ -40,4 +42,43 @@
 .bizon-thumb-wrapper img {
 	height:100%;
 	border-radius: 5px;
+}
+
+.bizon-move-section {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 15%;
+	display: flex;
+	align-items: center;
+	z-index: 999;
+}
+.bizon-move-section:hover {
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.bizon-move-section-left {
+	left: 0;
+	justify-content: left;
+}
+
+.bizon-move-section-right {
+	right: 0;
+	justify-content: right;
+}
+
+.bizon-move-arrow {
+	width: 48px;
+	height: 48px;
+	overflow: hidden;
+}
+.bizon-move-arrow-left {
+	background-image: url(images/icons/48/arrow-left.png);
+}
+.bizon-move-arrow-right {
+	background-image: url(images/icons/48/arrow-right.png);
+}
+
+.bizon-move-section:hover .bizon-move-arrow {
+	background-color: #AAA;
 }

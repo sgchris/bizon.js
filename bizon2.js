@@ -35,6 +35,13 @@
 			this.#initBizonEl();
 			this.#initMainImage();
 			this.#initThumbnails();
+			this.#initControls();
+
+			this.#bindEvents();
+		}
+
+		hide() {
+			this.#unbindEvents();
 		}
 
 
@@ -89,6 +96,37 @@
 
 				that.#bizonEl.querySelector('#bizon-thumbnails').appendChild(wrapperEl);
 			});
+		}
+
+		// init the "right", "left" and "close" buttons
+		#initControls() {
+			// the areas
+			const moveLeftSection = document.createElement('div');
+			moveLeftSection.classList.add('bizon-move-section');
+			moveLeftSection.classList.add('bizon-move-section-left');
+			const moveRightSection = document.createElement('div');
+			moveRightSection.classList.add('bizon-move-section');
+			moveRightSection.classList.add('bizon-move-section-right');
+
+			// the arrows
+			const moveLeftArrow = document.createElement('div');
+			moveLeftArrow.classList.add('bizon-move-arrow');
+			moveLeftArrow.classList.add('bizon-move-arrow-left');
+			const moveRightArrow = document.createElement('div');
+			moveRightArrow.classList.add('bizon-move-arrow');
+			moveRightArrow.classList.add('bizon-move-arrow-right');
+
+			moveLeftSection.appendChild(moveLeftArrow);
+			moveRightSection.appendChild(moveRightArrow);
+
+			this.#bizonEl.querySelector('#bizon-main-image').appendChild(moveLeftSection);
+			this.#bizonEl.querySelector('#bizon-main-image').appendChild(moveRightSection);
+		}
+
+		#bindEvents() {
+		}
+
+		#unbindEvents() {
 		}
 	}
 
