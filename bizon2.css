@@ -71,6 +71,7 @@
 	width: 48px;
 	height: 48px;
 	overflow: hidden;
+	cursor: pointer;
 }
 .bizon-move-arrow-left {
 	background-image: url(images/icons/48/arrow-left.png);
@@ -79,6 +80,19 @@
 	background-image: url(images/icons/48/arrow-right.png);
 }
 
-.bizon-move-section:hover .bizon-move-arrow {
+.bizon-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 48px;
+	height: 48px;
+	background-image: url(images/icons/48/close.png);
+	cursor: pointer;
+}
+
+.bizon-move-section:hover .bizon-move-arrow,
+.bizon-move-section:hover .bizon-close-button
+{
 	background-color: #AAA;
 }
+

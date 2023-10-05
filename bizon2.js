@@ -13,6 +13,9 @@
 
 		// the slider element
 		#bizonEl = null;
+		#rightButtonEl = null;
+		#leftButtonEl = null;
+		#closeButtonEl = null;
 
 		#bizonHtml = `
 		<div id="bizon-slider">
@@ -100,6 +103,8 @@
 
 		// init the "right", "left" and "close" buttons
 		#initControls() {
+			const mainImageSection = this.#bizonEl.querySelector('#bizon-main-image');
+
 			// the areas
 			const moveLeftSection = document.createElement('div');
 			moveLeftSection.classList.add('bizon-move-section');
@@ -109,18 +114,26 @@
 			moveRightSection.classList.add('bizon-move-section-right');
 
 			// the arrows
-			const moveLeftArrow = document.createElement('div');
-			moveLeftArrow.classList.add('bizon-move-arrow');
-			moveLeftArrow.classList.add('bizon-move-arrow-left');
-			const moveRightArrow = document.createElement('div');
-			moveRightArrow.classList.add('bizon-move-arrow');
-			moveRightArrow.classList.add('bizon-move-arrow-right');
+			const this.#leftButtonEl = document.createElement('div');
+			this.#leftButtonEl.classList.add('bizon-move-arrow');
+			this.#leftButtonEl.classList.add('bizon-move-arrow-left');
+			this.#leftButtonEl.title = "Previous";
+			const this.#rightButtonEl = document.createElement('div');
+			this.#rightButtonEl.classList.add('bizon-move-arrow');
+			this.#rightButtonEl.classList.add('bizon-move-arrow-right');
+			this.#rightButtonEl.title = "Next";
+
+			// the close button
+			const this.#closeButtonEl = document.createElement('div');
+			this.#closeButtonEl.classList.add('bizon-close-button');
+			this.#closeButtonEl.title = "Close";
 
 			moveLeftSection.appendChild(moveLeftArrow);
 			moveRightSection.appendChild(moveRightArrow);
+			moveRightSection.appendChild(closeButton);
 
-			this.#bizonEl.querySelector('#bizon-main-image').appendChild(moveLeftSection);
-			this.#bizonEl.querySelector('#bizon-main-image').appendChild(moveRightSection);
+			mainImageSection.appendChild(moveLeftSection);
+			mainImageSection.appendChild(moveRightSection);
 		}
 
 		#bindEvents() {
