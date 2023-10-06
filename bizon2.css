@@ -19,6 +19,9 @@
 	position: relative;
 	overflow: hidden;
 }
+.bizon-single-image #bizon-main-image {
+	height: 100%;
+}
 #bizon-main-image-wrapper {
 	height: calc(100% - 20px);
 	padding: 10px;
@@ -49,6 +52,10 @@
 	border-radius: 5px;
 	cursor: pointer;
 }
+.bizon-single-image #bizon-thumbnails {
+	height: 0%;
+}
+
 .bizon-thumb-wrapper-active {
 	background: #c9c9c9;
 }
@@ -91,6 +98,10 @@
 }
 .bizon-move-arrow-right {
 	background-image: url(images/icons/48/arrow-right.png);
+}
+
+.bizon-single-image .bizon-move-arrow {
+	display: none;
 }
 
 .bizon-close-button {

@@ -33,7 +33,7 @@
 		// show the slider
 		show() {
 			if (this.#options.images.length === 0) {
-				console.error("Bizon: images are not provided");
+				console.warn("Bizon: images are not provided");
 				return;
 			}
 
@@ -69,6 +69,10 @@
 			this.#bizonEl.parentNode.removeChild(this.#bizonEl);
 			bizonWrapper.remove();
 
+			if (this.#options.images.length <= 1) {
+				this.#bizonEl.classList.add('bizon-single-image');
+			}
+
 			document.body.appendChild(this.#bizonEl);
 		}
 
@@ -85,6 +89,10 @@
 
 		// fill the thumbnails section
 		#initThumbnails() {
+			if (this.#options.images.length <= 1) {
+				return;
+			}
+
 			const that = this;
 			this.#options.images.forEach((img, idx) => {
 				let imgEl = document.createElement('img');
@@ -126,6 +134,10 @@
 		}
 
 		#setActiveThumbnail() {
+			if (this.#options.images.length <= 1) {
+				return;
+			}
+
 			const idx = this.#currentImageIndex;
 
 			// remove current active thumb
@@ -177,8 +189,9 @@
 		// hide right on last image, or left on forst image
 		#updateControlsVisibility() {
 			// disable "next" on last item
-			this.#bizonEl.querySelector('.bizon-move-section-right').style.visibility = 
-				(this.#currentImageIndex >= this.#options.images.length - 1) ? 'hidden' : 'visible';
+			this.#bizonEl.querySelector('.bizon-move-arrow-right').style.display = 
+				(this.#currentImageIndex >= this.#options.images.length - 1 || 
+					this.#options.images.length <= 1) ? 'none' : 'initial';
 			this.#bizonEl.querySelector('.bizon-move-section-left').style.visibility = 
 				(this.#currentImageIndex <= 0) ? 'hidden' : 'visible';
 		}
@@ -198,7 +211,6 @@
 			};
 
 			window.__bizon_keydown_callback = e => {
-				console.log('e.key', e.key);
 				if (e.key === 'Escape') {
 					this.hide();
 				}
