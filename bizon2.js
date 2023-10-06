@@ -20,7 +20,7 @@
 		#currentImageIndex = 0;
 
 		#bizonHtml = `
-		<div id="bizon-slider">
+		<div id="bizon-slider" class="prevent-select">
 			<div id="bizon-main-image"></div>
 			<div id="bizon-thumbnails"></div>
 		</div>`.replace(/\s+</g, '<'); // remove whitespaces
@@ -49,6 +49,8 @@
 
 		hide() {
 			this.#unbindEvents();
+
+			this.#bizonEl.remove();
 		}
 
 
@@ -92,16 +94,20 @@
 
 				let wrapperEl = document.createElement('div');
 				wrapperEl.classList.add('bizon-thumb-wrapper');
+				wrapperEl.setAttribute('thumb-index', idx);
 				if (idx == 0) {
 					wrapperEl.classList.add('bizon-thumb-wrapper-active');
 				}
 				wrapperEl.appendChild(imgEl);
+				wrapperEl.onclick = e => {
+					this.#setMainImage(idx);
+				}
 
 				that.#bizonEl.querySelector('#bizon-thumbnails').appendChild(wrapperEl);
 			});
 		}
 
-		// set mmain image
+		// set the image and process all the events: mark thumb, hide arrows if needed.
 		#setMainImage(idx) {
 			// check if in range
 			idx = idx >= this.#options.images.length ? this.#options.images.length - 1 : idx;
@@ -115,6 +121,8 @@
 			this.#mainImageEl.setAttribute('title', currentImageObj.caption);
 
 			this.#setActiveThumbnail();
+
+			this.#updateControlsVisibility();
 		}
 
 		#setActiveThumbnail() {
@@ -166,24 +174,49 @@
 			mainImageSection.appendChild(moveRightSection);
 		}
 
-		goNext() {
-			this.#setMainImage(this.#currentImageIndex + 1);
+		// hide right on last image, or left on forst image
+		#updateControlsVisibility() {
+			// disable "next" on last item
+			this.#bizonEl.querySelector('.bizon-move-section-right').style.visibility = 
+				(this.#currentImageIndex >= this.#options.images.length - 1) ? 'hidden' : 'visible';
+			this.#bizonEl.querySelector('.bizon-move-section-left').style.visibility = 
+				(this.#currentImageIndex <= 0) ? 'hidden' : 'visible';
 		}
 
-		goPrevious() {
-			this.#setMainImage(this.#currentImageIndex - 1);
-		}
-
+		// bind keyboard press and buttons' click
 		#bindEvents() {
-			this.#rightButtonEl.parentNode.onclick = () => {
-				this.goNext();
+			this.#rightButtonEl.parentNode.onclick = e => {
+				if (e.target == this.#closeButtonEl) {
+					this.hide();
+					return;
+				}
+
+				this.#setMainImage(this.#currentImageIndex + 1);
 			};
-			this.#leftButtonEl.parentNode.onclick = () => {
-				this.goPrevious();
+			this.#leftButtonEl.parentNode.onclick = e => {
+				this.#setMainImage(this.#currentImageIndex - 1);
 			};
+
+			window.__bizon_keydown_callback = e => {
+				console.log('e.key', e.key);
+				if (e.key === 'Escape') {
+					this.hide();
+				}
+
+				if (e.key === 'ArrowRight') {
+					this.#setMainImage(this.#currentImageIndex + 1);
+				}
+
+				if (e.key === 'ArrowLeft') {
+					this.#setMainImage(this.#currentImageIndex - 1);
+				}
+			}
+
+			window.addEventListener('keydown', window.__bizon_keydown_callback, false);
 		}
 
 		#unbindEvents() {
+			window.removeEventListener('keydown', window.__bizon_keydown_callback);
 		}
 	}
 

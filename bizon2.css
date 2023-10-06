@@ -1,3 +1,9 @@
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 #bizon-slider {
 	position: fixed;
 	left: 0;
@@ -17,11 +23,16 @@
 	height: calc(100% - 20px);
 	padding: 10px;
 	overflow: hidden;
-	display: inline-block;
+	display: flex;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 }
 #bizon-main-image-wrapper img {
-    height: 100%;
     border-radius: 5px;
+	max-width: 100%;
+	max-height: 100%;
 }
 
 #bizon-thumbnails {
@@ -35,6 +46,8 @@
 	padding: 5px;
 	overflow: hidden;
 	background: #2a2a2a;
+	border-radius: 5px;
+	cursor: pointer;
 }
 .bizon-thumb-wrapper-active {
 	background: #c9c9c9;
@@ -52,6 +65,7 @@
 	display: flex;
 	align-items: center;
 	z-index: 999;
+	cursor: pointer;
 }
 .bizon-move-section:hover {
 	background: rgba(255, 255, 255, 0.05);
@@ -71,7 +85,6 @@
 	width: 48px;
 	height: 48px;
 	overflow: hidden;
-	cursor: pointer;
 }
 .bizon-move-arrow-left {
 	background-image: url(images/icons/48/arrow-left.png);

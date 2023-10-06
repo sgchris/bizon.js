@@ -9,46 +9,25 @@
 <body>
 	<h1>Bizon v2.0Alpha</h1>
 	<h2>Display gallery in a popup</h2>
-	<button>Open gallery</button>
+	<button onclick="bizonObj.show();">Open gallery</button>
 </body>
 	<script src='bizon2.js'></script>
-<script>
+	<script>
 	// Prepare Bizon's parameters
+	let sampleImagesList = [];
+	for (let i = 10; i <= 16; i++) {
+		sampleImagesList.push({
+			src: `images/sample_image_${i}.jpeg`,
+			thumb: `images/sample_image_${i}.jpeg`,
+			width: Math.random() * 1000 - 500,
+			height: Math.random() * 1000 - 500,
+			caption: `images/sample_image_${i}.jpeg`,
+		});
+	}
+
 	const galleryData = {
-		some_options: "here",
-		images: [
-			{
-				src: "images/sample_image_1.jpeg",
-				thumb: "images/sample_image_1.jpeg",
-				width: 1024,
-				height: 1024,
-				caption: "images/sample_image_1.jpeg",
-			},
-			{
-				src: "images/sample_image_2.jpeg",
-				width: 1024,
-				height: 1024,
-				caption: "images/sample_image_2.jpeg",
-			},
-			{
-				src: "images/sample_image_3.jpeg",
-				width: 1024,
-				height: 1024,
-				caption: "images/sample_image_3.jpeg",
-			},
-			{
-				src: "images/sample_image_4.jpeg",
-				width: 1024,
-				height: 1024,
-				caption: "images/sample_image_4.jpeg",
-			},
-			{
-				src: "images/sample_image_5.jpeg",
-				width: 1024,
-				height: 1024,
-				caption: "images/sample_image_5.jpeg",
-			}
-		]
+		title: "Sample gallery",
+		images: sampleImagesList
 	};
 
 	// initialize the object
