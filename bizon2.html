@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+	<title>Bizon.js v2.0 demo page</title>
+	<link rel="stylesheet" href="bizon2.css" />
+</head>
+<body>
+	<h1>Bizon v2.0Alpha</h1>
+	<h2>Display gallery in a popup</h2>
+	<button onclick="bizonObj.show();">Open gallery</button>
+</body>
+	<script src='bizon2.js'></script>
+	<script>
+	// Prepare Bizon's parameters
+	let sampleImagesList = [];
+	for (let i = 10; i <= 11; i++) {
+		sampleImagesList.push({
+			src: `images/sample_image_${i}.jpeg`,
+			thumb: `images/sample_image_${i}.jpeg`,
+			width: Math.random() * 1000 - 500,
+			height: Math.random() * 1000 - 500,
+			caption: `images/sample_image_${i}.jpeg`,
+		});
+	}
+
+	const galleryData = {
+		title: "Sample gallery",
+		images: sampleImagesList
+	};
+
+	// initialize the object
+	const bizonObj = new Bizon(galleryData);
+	bizonObj.show();
+	</script>
+</html>
+
