@@ -210,6 +210,12 @@
 				this.#setMainImage(this.#currentImageIndex - 1);
 			};
 
+			this.#bizonEl.querySelector('#bizon-main-image-wrapper').onclick = e => {
+				if (e.target == this.#bizonEl.querySelector('#bizon-main-image-wrapper')) {
+					this.hide();
+				}
+			}
+
 			window.__bizon_keydown_callback = e => {
 				if (e.key === 'Escape') {
 					this.hide();
