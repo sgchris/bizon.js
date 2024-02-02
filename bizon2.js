@@ -12,7 +12,9 @@
 
 		// the slider element
 		#bizonEl = null;
+		#mainImageWrapper = null; // the wrapping <div> of the main <img> (or <video>)
 		#mainImageEl = null;
+		#mainVideoEl = null;
 		#rightButtonEl = null;
 		#leftButtonEl = null;
 		#closeButtonEl = null;
@@ -78,13 +80,12 @@
 
 		// fill the main image
 		#initMainImage() {
-			let mainImageWrapper = document.createElement('div');
-			mainImageWrapper.id = 'bizon-main-image-wrapper';
+			this.#mainImageWrapper = document.createElement('div');
+			this.#mainImageWrapper.id = 'bizon-main-image-wrapper';
 
 			this.#mainImageEl = document.createElement('img');
 
-			mainImageWrapper.appendChild(this.#mainImageEl);
-			this.#bizonEl.querySelector('#bizon-main-image').appendChild(mainImageWrapper);
+			this.#bizonEl.querySelector('#bizon-main-image').appendChild(this.#mainImageWrapper);
 		}
 
 		// fill the thumbnails section
@@ -95,10 +96,13 @@
 
 			const that = this;
 			this.#options.images.forEach((img, idx) => {
-				let imgEl = document.createElement('img');
+				const tagName = typeof(img.type) == "string" && img.type.toLowerCase() == 'video' ? 'video' : 'img';
+				let imgEl =  document.createElement(tagName);
 				imgEl.src = img.thumb || img.src;
-				imgEl.setAttribute('alt', img.caption);
-				imgEl.setAttribute('title', img.caption);
+				if (img.caption) {
+					imgEl.setAttribute('alt', img.caption);
+					imgEl.setAttribute('title', img.caption);
+				}
 
 				let wrapperEl = document.createElement('div');
 				wrapperEl.classList.add('bizon-thumb-wrapper');
@@ -115,6 +119,47 @@
 			});
 		}
 
+		// update the <img> or <video> element
+		#setMainImageEl() {
+			const currentImageObj = this.#options.images[this.#currentImageIndex];
+			const isVideo = (typeof(currentImageObj.type) == 'string' && currentImageObj.type.toLowerCase() == 'video') ||
+				/\.(mp4|wmv|mpg|mpeg)$/g.match(currentImageObj.src);
+			if (this.#mainImageWrapper.firstChild) {
+				this.#mainImageWrapper.removeChild(this.#mainImageWrapper.firstChild);
+			}
+
+			if (isVideo) {
+				this.#mainVideoEl = document.createElement('video');
+				this.#mainVideoEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+				this.#mainVideoEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+				this.#mainVideoEl.src = currentImageObj.src;
+				this.#mainImageWrapper.appendChild(this.#mainVideoEl);
+				this.#mainVideoEl.autoplay = true;
+				this.#mainVideoEl.muted = true;
+				this.#mainVideoEl.loop = true;
+
+				setTimeout(() => {
+					this.#mainVideoEl.load();
+					let playbackPromise = this.#mainVideoEl.play();
+					if (playbackPromise) {
+						playbackPromise.then(() => {
+							console.log('playback started');
+						}).catch(exc => {
+							console.log('playback failed', exc);
+						})
+					}
+				});
+
+
+			} else {
+				this.#mainImageEl.setAttribute('src', currentImageObj.src);
+				this.#mainImageEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+				this.#mainImageEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+				this.#mainImageWrapper.appendChild(this.#mainImageEl);
+				this.#mainVideoEl = null;
+			}
+		}
+
 		// set the image and process all the events: mark thumb, hide arrows if needed.
 		#setMainImage(idx) {
 			// check if in range
@@ -124,9 +169,8 @@
 			this.#currentImageIndex = idx;
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
 
-			this.#mainImageEl.src = currentImageObj.src; // set the first image by default
-			this.#mainImageEl.setAttribute('alt', currentImageObj.caption);
-			this.#mainImageEl.setAttribute('title', currentImageObj.caption);
+			// update the <img> or <video> element
+			this.#setMainImageEl()
 
 			this.#setActiveThumbnail();
 
