@@ -133,43 +133,52 @@
 
 		// update the <img> or <video> element
 		#setMainImageEl() {
+			// check if the element is image or video
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
+			console.log('current media', currentImageObj);
 			const isVideo = (typeof(currentImageObj.type) == 'string' && currentImageObj.type.toLowerCase() == 'video') ||
 				currentImageObj.src.match(/\.(mp4|wmv|mpg|mpeg)$/g);
+			
+			// clear the current element
 			if (this.#mainImageWrapper.firstChild) {
 				this.#mainImageWrapper.removeChild(this.#mainImageWrapper.firstChild);
 			}
 
+			// create the main image or video
+			let mainEl;
 			if (isVideo) {
 				this.#mainVideoEl = document.createElement('video');
-				this.#mainVideoEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
-				this.#mainVideoEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
-				this.#mainVideoEl.src = currentImageObj.src;
-				this.#mainImageWrapper.appendChild(this.#mainVideoEl);
 				this.#mainVideoEl.autoplay = true;
 				this.#mainVideoEl.muted = true;
 				this.#mainVideoEl.loop = true;
-
-				setTimeout(() => {
-					this.#mainVideoEl.load();
-					let playbackPromise = this.#mainVideoEl.play();
-					if (playbackPromise) {
-						playbackPromise.then(() => {
-							console.log('playback started');
-						}).catch(exc => {
-							console.log('playback failed', exc);
-						})
-					}
-				});
-
-
+				this.#mainVideoEl.load();
+				this.#mainVideoEl.play();
+				mainEl = this.#mainVideoEl;
 			} else {
-				this.#mainImageEl.setAttribute('src', currentImageObj.src);
-				this.#mainImageEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
-				this.#mainImageEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
-				this.#mainImageWrapper.appendChild(this.#mainImageEl);
-				this.#mainVideoEl = null;
+				mainEl = this.#mainImageEl;
 			}
+
+			mainEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+			mainEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+			mainEl.src = currentImageObj.src;
+
+			// set the dimensions
+			setTimeout(() => {
+				const wrapperWidth = this.#mainImageWrapper.clientWidth;
+				const wrapperHeight = this.#mainImageWrapper.clientHeight;
+				const wrapperRatio = (1.0 * wrapperWidth) / wrapperHeight;
+
+				const mediaRatio = (1.0 * currentImageObj.width) / currentImageObj.height;
+
+				if (wrapperRatio > mediaRatio) {
+					mainEl.style.height = wrapperHeight + 'px';
+					mainEl.style.width = 'auto';
+				} else {
+					mainEl.style.width = wrapperWidth + 'px';
+					mainEl.style.height = 'auto';
+				}
+			});
+			this.#mainImageWrapper.appendChild(mainEl);
 		}
 
 		// set the image and process all the events: mark thumb, hide arrows if needed.
@@ -180,7 +189,6 @@
 			}
 
 			this.#currentImageIndex = idx;
-			const currentImageObj = this.#options.images[this.#currentImageIndex];
 
 			// update the <img> or <video> element
 			this.#setMainImageEl()
