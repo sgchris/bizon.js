@@ -34,8 +34,15 @@
 
 		// show the slider
 		show() {
+			// check that images are defined
 			if (this.#options.images.length === 0) {
 				console.warn("Bizon: images are not provided");
+				return;
+
+			// allow gallery only for images. For videos, only one item is allowed
+			} else if (this.#options.images.length > 1 && 
+				this.#options.images.some(imgObj => this.#isVideo(imgObj))) {
+				console.error("Bizon gallery does not support gallery for video files")
 				return;
 			}
 
@@ -47,6 +54,11 @@
 			this.#setMainImage(this.#currentImageIndex);
 
 			this.#bindEvents();
+		}
+
+		#isVideo(imageObj) {
+			return (typeof(imageObj.type) == 'string' && imageObj.type.toLowerCase() == 'video') ||
+				imageObj.src.match(/\.(mp4|wmv|mpg|mpeg)$/g);
 		}
 
 		hide() {
@@ -123,7 +135,7 @@
 		#setMainImageEl() {
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
 			const isVideo = (typeof(currentImageObj.type) == 'string' && currentImageObj.type.toLowerCase() == 'video') ||
-				/\.(mp4|wmv|mpg|mpeg)$/g.match(currentImageObj.src);
+				currentImageObj.src.match(/\.(mp4|wmv|mpg|mpeg)$/g);
 			if (this.#mainImageWrapper.firstChild) {
 				this.#mainImageWrapper.removeChild(this.#mainImageWrapper.firstChild);
 			}
@@ -162,9 +174,10 @@
 
 		// set the image and process all the events: mark thumb, hide arrows if needed.
 		#setMainImage(idx) {
-			// check if in range
-			idx = idx >= this.#options.images.length ? this.#options.images.length - 1 : idx;
-			idx = idx < 0 ? 0 : idx;
+			// check if out of range
+			if (idx >= this.#options.images.length || idx < 0) {
+				return;
+			}
 
 			this.#currentImageIndex = idx;
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
