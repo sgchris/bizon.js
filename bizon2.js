@@ -135,7 +135,6 @@
 		#setMainImageEl() {
 			// check if the element is image or video
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
-			console.log('current media', currentImageObj);
 			const isVideo = (typeof(currentImageObj.type) == 'string' && currentImageObj.type.toLowerCase() == 'video') ||
 				currentImageObj.src.match(/\.(mp4|wmv|mpg|mpeg)$/g);
 			
@@ -155,6 +154,7 @@
 				this.#mainVideoEl.play();
 				mainEl = this.#mainVideoEl;
 			} else {
+				this.#mainVideoEl = document.createElement('img');
 				mainEl = this.#mainImageEl;
 			}
 
