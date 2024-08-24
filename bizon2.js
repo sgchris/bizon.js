@@ -21,11 +21,11 @@
 
 		#currentImageIndex = 0;
 
-		#bizonHtml = `
-		<div id="bizon-slider" class="prevent-select">
-			<div id="bizon-main-image"></div>
-			<div id="bizon-thumbnails"></div>
-		</div>`.replace(/\s+</g, '<'); // remove whitespaces
+		#bizonHtml = [
+		`<div id="bizon-slider" class="prevent-select">`,
+			`<div id="bizon-main-image"></div>`,
+			`<div id="bizon-thumbnails"></div>`,
+		`</div>`].join('');
 
 		constructor(options) {
 			// build the object options
@@ -40,7 +40,7 @@
 				return;
 
 			// allow gallery only for images. For videos, only one item is allowed
-			} else if (this.#options.images.length > 1 && 
+			} else if (this.#options.images.length > 1 &&
 				this.#options.images.some(imgObj => this.#isVideo(imgObj))) {
 				console.error("Bizon gallery does not support gallery for video files")
 				return;
@@ -137,7 +137,7 @@
 			const currentImageObj = this.#options.images[this.#currentImageIndex];
 			const isVideo = (typeof(currentImageObj.type) == 'string' && currentImageObj.type.toLowerCase() == 'video') ||
 				currentImageObj.src.match(/\.(mp4|wmv|mpg|mpeg)$/g);
-			
+
 			// clear the current element
 			if (this.#mainImageWrapper.firstChild) {
 				this.#mainImageWrapper.removeChild(this.#mainImageWrapper.firstChild);
@@ -254,10 +254,10 @@
 		// hide right on last image, or left on forst image
 		#updateControlsVisibility() {
 			// disable "next" on last item
-			this.#bizonEl.querySelector('.bizon-move-arrow-right').style.display = 
-				(this.#currentImageIndex >= this.#options.images.length - 1 || 
+			this.#bizonEl.querySelector('.bizon-move-arrow-right').style.display =
+				(this.#currentImageIndex >= this.#options.images.length - 1 ||
 					this.#options.images.length <= 1) ? 'none' : 'initial';
-			this.#bizonEl.querySelector('.bizon-move-section-left').style.visibility = 
+			this.#bizonEl.querySelector('.bizon-move-section-left').style.visibility =
 				(this.#currentImageIndex <= 0) ? 'hidden' : 'visible';
 		}
 
