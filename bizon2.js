@@ -148,6 +148,7 @@
 			if (isVideo) {
 				this.#mainVideoEl = document.createElement('video');
 				this.#mainVideoEl.autoplay = true;
+				this.#mainVideoEl.playsinline = true;
 				this.#mainVideoEl.muted = false;
 				this.#mainVideoEl.loop = true;
 				this.#mainVideoEl.controls = true;
