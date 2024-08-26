@@ -148,8 +148,11 @@
 			if (isVideo) {
 				this.#mainVideoEl = document.createElement('video');
 				this.#mainVideoEl.autoplay = true;
-				this.#mainVideoEl.muted = true;
+				this.#mainVideoEl.muted = false;
 				this.#mainVideoEl.loop = true;
+				this.#mainVideoEl.controls = true;
+				this.#mainVideoEl.controlsList = "nodownload";
+				this.#mainVideoEl.oncontextmenu = "return false;";
 				this.#mainVideoEl.load();
 				this.#mainVideoEl.play();
 				mainEl = this.#mainVideoEl;
