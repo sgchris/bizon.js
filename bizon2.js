@@ -162,8 +162,8 @@
 				mainEl = this.#mainImageEl;
 			}
 
-			mainEl.setAttribute('alt', this.#options.title + ' | ' + (currentImageObj.caption || ""));
-			mainEl.setAttribute('title', this.#options.title + ' | ' + (currentImageObj.caption || ""));
+			mainEl.setAttribute('alt', (currentImageObj.caption || ""));
+			mainEl.setAttribute('title', (currentImageObj.caption || ""));
 			mainEl.src = currentImageObj.src;
 
 			// set the dimensions
