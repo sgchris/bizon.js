@@ -5,6 +5,9 @@
 		#defaultOptions = {
 			title: null,
 			images: [],
+            callbacks: {
+                onClose: null,
+            },
 		}
 
 		// slider options - combined, default and provided by the user
@@ -65,6 +68,11 @@
 			this.#unbindEvents();
 
 			this.#bizonEl.remove();
+
+            // call the onClose  callback
+            if (typeof(this.#options.callbacks.onClose) == 'function') {
+                this.#options.callbacks.onClose();
+            }
 		}
 
 
@@ -154,8 +162,8 @@
 				this.#mainVideoEl.controls = true;
 				this.#mainVideoEl.controlsList = "nodownload";
 				this.#mainVideoEl.oncontextmenu = "return false;";
-				this.#mainVideoEl.load();
-				this.#mainVideoEl.play();
+				//this.#mainVideoEl.load();
+				//this.#mainVideoEl.play();
 				mainEl = this.#mainVideoEl;
 			} else {
 				this.#mainVideoEl = document.createElement('img');
