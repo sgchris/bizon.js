@@ -55,6 +55,22 @@ class BizonGallery {
         this.#mainImageWrapper = document.createElement("div");
         this.#mainImageWrapper.id = "bizon-main-image-wrapper";
         mainImageContainer.appendChild(this.#mainImageWrapper);
+        mainImageContainer.addEventListener("click", e => {
+            if (e.target.id === "bizon-main-image-wrapper") {
+                this.hide();
+            } else {
+                const targetRect = e.target.getBoundingClientRect();
+                const clickPosition = e.clientX;
+
+                if (clickPosition > targetRect.left + targetRect.width / 2) {
+                    // Clicked on the right side of the target
+                    this.#setMainImage(this.#currentImageIndex + 1);
+                } else {
+                    // Clicked on the left side of the target
+                    this.#setMainImage(this.#currentImageIndex - 1);
+                }
+            }
+        });
 
         const thumbnailsContainer = document.createElement("div");
         thumbnailsContainer.id = "bizon-thumbnails";
