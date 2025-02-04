@@ -1,38 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-	<title>Bizon.js v2.0 demo page</title>
-	<link rel="stylesheet" href="bizon2.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <title>Bizon.js v2.0 Demo Page</title>
+    <link rel="stylesheet" href="bizon2.css">
 </head>
 <body>
-	<h1>Bizon v2.0Alpha</h1>
-	<h2>Display gallery in a popup</h2>
-	<button onclick="bizonObj.show();">Open gallery</button>
+    <h1>Bizon v2.0Alpha</h1>
+    <h2>Display gallery in a popup</h2>
+    <button id="openGallery">Open Gallery</button>
+
+    <script src="bizon2.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Prepare Bizon's parameters
+            const sampleImagesList = Array.from({ length: 17 }, (_, i) => ({
+                src: `images/sample_image_${i + 1}.jpeg`,
+                thumb: `images/sample_image_${i + 1}.jpeg`,
+                caption: `Sample Image ${i + 1}`
+            }));
+
+            const galleryData = {
+                title: "Sample Gallery",
+                images: sampleImagesList,
+                callbacks: {
+                    onClose: () => console.log("Gallery closed")
+                }
+            };
+
+            // Initialize the gallery object
+            const bizonObj = new BizonGallery(galleryData);
+
+            // Attach event listener to the button
+            document.getElementById("openGallery").addEventListener("click", () => {
+                bizonObj.show();
+            });
+        });
+    </script>
 </body>
-	<script src='bizon2.js'></script>
-	<script>
-	// Prepare Bizon's parameters
-	let sampleImagesList = [];
-	for (let i = 1; i <= 17; i++) {
-		sampleImagesList.push({
-			src: `images/sample_image_${i}.jpeg`,
-			thumb: `images/sample_image_${i}.jpeg`,
-			width: Math.random() * 1000 - 500,
-			height: Math.random() * 1000 - 500,
-			caption: `images/sample_image_${i}.jpeg`,
-		});
-	}
-
-	const galleryData = {
-		title: "Sample gallery",
-		images: sampleImagesList
-	};
-
-	// initialize the object
-	const bizonObj = new Bizon(galleryData);
-	bizonObj.show();
-	</script>
 </html>
-
