@@ -43,6 +43,11 @@ class Bizon {
         this.#bizonEl = document.createElement("div");
         this.#bizonEl.id = "bizon-slider";
         this.#bizonEl.classList.add("prevent-select");
+        
+        // Add single image class if only one image
+        if (this.#options.images.length === 1) {
+            this.#bizonEl.classList.add("bizon-single-image");
+        }
 
         const mainImageContainer = document.createElement("div");
         mainImageContainer.id = "bizon-main-image";
@@ -50,22 +55,27 @@ class Bizon {
         this.#mainImageWrapper = document.createElement("div");
         this.#mainImageWrapper.id = "bizon-main-image-wrapper";
         
-        // Add navigation arrows
-        const leftArrow = document.createElement("div");
-        leftArrow.className = "bizon-arrow bizon-arrow-left";
-        leftArrow.title = "Previous image";
-        leftArrow.addEventListener("click", (e) => {
-            e.stopPropagation();
-            this.#setMainImage(this.#currentImageIndex - 1);
-        });
+        // Add navigation arrows only if more than one image
+        if (this.#options.images.length > 1) {
+            const leftArrow = document.createElement("div");
+            leftArrow.className = "bizon-arrow bizon-arrow-left";
+            leftArrow.title = "Previous image";
+            leftArrow.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.#setMainImage(this.#currentImageIndex - 1);
+            });
 
-        const rightArrow = document.createElement("div");
-        rightArrow.className = "bizon-arrow bizon-arrow-right";
-        rightArrow.title = "Next image";
-        rightArrow.addEventListener("click", (e) => {
-            e.stopPropagation();
-            this.#setMainImage(this.#currentImageIndex + 1);
-        });
+            const rightArrow = document.createElement("div");
+            rightArrow.className = "bizon-arrow bizon-arrow-right";
+            rightArrow.title = "Next image";
+            rightArrow.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.#setMainImage(this.#currentImageIndex + 1);
+            });
+
+            mainImageContainer.appendChild(leftArrow);
+            mainImageContainer.appendChild(rightArrow);
+        }
 
         // Add close button
         const closeButton = document.createElement("div");
@@ -77,13 +87,11 @@ class Bizon {
         });
 
         mainImageContainer.appendChild(this.#mainImageWrapper);
-        mainImageContainer.appendChild(leftArrow);
-        mainImageContainer.appendChild(rightArrow);
         mainImageContainer.appendChild(closeButton);
         mainImageContainer.addEventListener("click", e => {
             if (e.target.id === "bizon-main-image-wrapper") {
                 this.hide();
-            } else {
+            } else if (this.#options.images.length > 1) {
                 const targetRect = e.target.getBoundingClientRect();
                 const clickPosition = e.clientX;
 
