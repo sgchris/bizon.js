@@ -1,4 +1,4 @@
-class BizonGallery {
+class Bizon {
     #defaultOptions = {
         title: null,
         images: [],
@@ -24,11 +24,6 @@ class BizonGallery {
     }
 
     show() {
-        if (this.#options.images.length > 1 && this.#options.images.some(img => this.#isVideo(img))) {
-            console.error("BizonGallery does not support multiple videos.");
-            return;
-        }
-
         this.#createSlider();
         this.#setMainImage(this.#currentImageIndex);
         this.#bindEvents();
@@ -54,7 +49,37 @@ class BizonGallery {
 
         this.#mainImageWrapper = document.createElement("div");
         this.#mainImageWrapper.id = "bizon-main-image-wrapper";
+        
+        // Add navigation arrows
+        const leftArrow = document.createElement("div");
+        leftArrow.className = "bizon-arrow bizon-arrow-left";
+        leftArrow.title = "Previous image";
+        leftArrow.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.#setMainImage(this.#currentImageIndex - 1);
+        });
+
+        const rightArrow = document.createElement("div");
+        rightArrow.className = "bizon-arrow bizon-arrow-right";
+        rightArrow.title = "Next image";
+        rightArrow.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.#setMainImage(this.#currentImageIndex + 1);
+        });
+
+        // Add close button
+        const closeButton = document.createElement("div");
+        closeButton.className = "bizon-close";
+        closeButton.title = "Close";
+        closeButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.hide();
+        });
+
         mainImageContainer.appendChild(this.#mainImageWrapper);
+        mainImageContainer.appendChild(leftArrow);
+        mainImageContainer.appendChild(rightArrow);
+        mainImageContainer.appendChild(closeButton);
         mainImageContainer.addEventListener("click", e => {
             if (e.target.id === "bizon-main-image-wrapper") {
                 this.hide();
@@ -83,7 +108,7 @@ class BizonGallery {
 
     #createThumbnails(container) {
         this.#options.images.forEach((img, idx) => {
-            const thumbEl = document.createElement(this.#isVideo(img) ? "video" : "img");
+            const thumbEl = document.createElement("img");
             thumbEl.src = img.thumb || img.src;
             thumbEl.alt = img.caption || "";
             thumbEl.title = img.caption || "";

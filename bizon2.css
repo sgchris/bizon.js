@@ -75,73 +75,81 @@
 }
 
 /* Navigation Arrows */
-.bizon-move-section {
+.bizon-arrow {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 15%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s ease-in-out;
     display: flex;
     align-items: center;
-    cursor: pointer;
-    z-index: 999;
-    transition: background 0.2s ease-in-out;
 }
 
-.bizon-move-section:hover {
-    background: rgba(255, 255, 255, 0.05);
+.bizon-arrow:hover {
+    background: rgba(0, 0, 0, 0.3);
 }
 
-/* Left and Right Navigation */
-.bizon-move-section-left {
-    left: 0;
-    justify-content: flex-start;
-}
-
-.bizon-move-section-right {
+.bizon-arrow-right {
     right: 0;
     justify-content: flex-end;
+    padding-right: 20px;
 }
 
-/* Arrow Icons */
-.bizon-move-arrow {
+.bizon-arrow-right::after {
+    content: "";
     width: 48px;
     height: 48px;
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.bizon-move-arrow-left {
-    background-image: url(images/icons/48/arrow-left.png);
-}
-
-.bizon-move-arrow-right {
-    background-image: url(images/icons/48/arrow-right.png);
-}
-
-/* Hide Arrows in Single Image Mode */
-.bizon-single-image .bizon-move-arrow {
-    display: none;
-}
-
-/* Close Button */
-.bizon-close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 48px;
-    height: 48px;
-    background: url(images/icons/48/close.png) no-repeat center;
-    background-size: contain;
-    cursor: pointer;
+    background: url("images/icons/32/arrow-right.png") center no-repeat;
+    background-size: 32px 32px;
+    background-color: #000;
+    opacity: 0.8;
     transition: opacity 0.2s ease-in-out;
 }
 
-.bizon-close-button:hover {
-    opacity: 0.7;
+.bizon-arrow-right:hover::after {
+    opacity: 1;
 }
 
-/* Hover Effect for Controls */
-.bizon-move-section:hover .bizon-move-arrow,
-.bizon-close-button:hover {
-    filter: brightness(1.2);
+.bizon-arrow-left {
+    left: 0;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.bizon-arrow-left::after {
+    content: "";
+    width: 48px;
+    height: 48px;
+    background: url("images/icons/32/arrow-left.png") center no-repeat;
+    background-size: 32px 32px;
+    background-color: #000;
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.bizon-arrow-left:hover::after {
+    opacity: 1;
+}
+
+/* Close Button */
+.bizon-close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 48px;
+    height: 48px;
+    background: url("images/icons/32/close.png") center no-repeat;
+    background-size: 32px 32px;
+    background-color: #000;
+    opacity: 0.8;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.bizon-close:hover {
+    opacity: 1;
 }
