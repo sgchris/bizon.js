@@ -1,155 +1,267 @@
 /* Prevent user selection */
 .prevent-select {
     user-select: none;
+    -webkit-user-select: none;
 }
 
-/* Main Bizon Slider */
+/* No page scrolling behind the open lightbox */
+html.bizon-open,
+html.bizon-open body {
+    overflow: hidden;
+}
+
+/* Main Bizon Slider (full screen) */
 #bizon-slider {
     position: fixed;
     inset: 0;
     z-index: 998;
-    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.94);
+    color: #fff;
+    overscroll-behavior: contain;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Main image section */
+/* Stage: everything above the thumbnails / caption */
 #bizon-main-image {
-    height: 92%;
-    text-align: center;
     position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow: hidden;
 }
 
-.bizon-single-image #bizon-main-image {
-    height: 100%;
-}
-
-/* Image Wrapper */
+/* Area for the media. The media box is sized by JS to fill it */
 #bizon-main-image-wrapper {
-    height: calc(100% - 20px);
-    padding: 10px;
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 16px 72px;
+    box-sizing: border-box;
     overflow: hidden;
 }
 
-#bizon-main-image-wrapper img,
-#bizon-main-image-wrapper video {
-    border-radius: 5px;
+@media (max-width: 767px) {
+    #bizon-main-image-wrapper {
+        padding: 8px;
+    }
+}
+
+.bizon-media-box {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+/* Media with unknown size: natural size, limited by the screen */
+.bizon-media-box-auto {
     max-width: 100%;
     max-height: 100%;
 }
 
-/* Thumbnail Navigation */
-#bizon-thumbnails {
-    height: 8%;
+.bizon-media,
+.bizon-placeholder {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent;
+}
+
+.bizon-media-box-auto .bizon-media {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.bizon-media-box-auto .bizon-placeholder {
+    display: none;
+}
+
+.bizon-placeholder {
+    pointer-events: none;
+}
+
+/* The sharp image fades in over the small placeholder */
+img.bizon-media {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+img.bizon-media.bizon-loaded {
+    opacity: 1;
+}
+
+/* Loading spinner */
+.bizon-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    box-sizing: border-box;
+    pointer-events: none;
+    animation: bizon-spin 0.8s linear infinite;
+}
+
+.bizon-spinner[hidden],
+.bizon-error[hidden],
+.bizon-caption[hidden],
+.bizon-arrow[hidden] {
+    display: none;
+}
+
+@keyframes bizon-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.bizon-error {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    transform: translateY(-50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Buttons */
+.bizon-arrow,
+.bizon-close {
+    position: absolute;
+    z-index: 10;
     display: flex;
+    align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.bizon-arrow:hover,
+.bizon-close:hover {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.bizon-arrow:focus-visible,
+.bizon-close:focus-visible,
+.bizon-thumb-wrapper:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.bizon-arrow {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.bizon-arrow-left {
+    left: 12px;
+}
+
+.bizon-arrow-right {
+    right: 12px;
+}
+
+.bizon-close {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+}
+
+/* Caption */
+.bizon-caption {
+    flex: 0 0 auto;
+    padding: 6px 16px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* Thumbnail strip (scrolls horizontally when there are many items) */
+#bizon-thumbnails {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 6px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .bizon-single-image #bizon-thumbnails {
-    height: 0;
+    display: none;
 }
 
-/* Individual Thumbnail */
+/* Individual thumbnail */
 .bizon-thumb-wrapper {
-    height: calc(100% - 10px);
-    padding: 5px;
+    position: relative;
+    flex: 0 0 auto;
+    min-width: 40px;
+    height: 56px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 4px;
     background: #2a2a2a;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    overflow: hidden;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* centers the strip when it fits, and still lets it scroll when it does not */
+.bizon-thumb-wrapper:first-child {
+    margin-left: auto;
+}
+
+.bizon-thumb-wrapper:last-child {
+    margin-right: auto;
+}
+
+@media (max-width: 767px) {
+    .bizon-thumb-wrapper {
+        height: 48px;
+    }
 }
 
 .bizon-thumb-wrapper:hover,
 .bizon-thumb-wrapper-active {
-    background: #c9c9c9;
+    border-color: #c9c9c9;
 }
 
-/* Thumbnail Images */
-.bizon-thumb-wrapper img,
-.bizon-thumb-wrapper video {
+.bizon-thumb-wrapper img {
+    display: block;
     height: 100%;
-    border-radius: 5px;
+    width: auto;
 }
 
-/* Navigation Arrows */
-.bizon-arrow {
+/* Play triangle over the thumbnail of a video */
+.bizon-thumb-play {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 15%;
-    background: transparent;
-    cursor: pointer;
-    z-index: 10;
-    transition: background 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-}
-
-.bizon-arrow:hover {
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.bizon-arrow-right {
-    right: 0;
-    justify-content: flex-end;
-    padding-right: 20px;
-}
-
-.bizon-arrow-right::after {
-    content: "";
-    width: 48px;
-    height: 48px;
-    background: url("images/icons/32/arrow-right.png") center no-repeat;
-    background-size: 32px 32px;
-    background-color: #000;
-    opacity: 0.8;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.bizon-arrow-right:hover::after {
-    opacity: 1;
-}
-
-.bizon-arrow-left {
-    left: 0;
-    justify-content: flex-start;
-    padding-left: 20px;
-}
-
-.bizon-arrow-left::after {
-    content: "";
-    width: 48px;
-    height: 48px;
-    background: url("images/icons/32/arrow-left.png") center no-repeat;
-    background-size: 32px 32px;
-    background-color: #000;
-    opacity: 0.8;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.bizon-arrow-left:hover::after {
-    opacity: 1;
-}
-
-/* Close Button */
-.bizon-close {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    width: 48px;
-    height: 48px;
-    background: url("images/icons/32/close.png") center no-repeat;
-    background-size: 32px 32px;
-    background-color: #000;
-    opacity: 0.8;
-    cursor: pointer;
-    z-index: 10;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.bizon-close:hover {
-    opacity: 1;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    margin: -8px 0 0 -5px;
+    border-style: solid;
+    border-width: 8px 0 8px 14px;
+    border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+    pointer-events: none;
 }
